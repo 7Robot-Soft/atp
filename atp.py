@@ -15,7 +15,7 @@ def encode(stream, id, args):
                 code = c
                 break
         if code == None:
-            print("[proto] unknow type", file=sys.stderr)
+            print("[atp.encode] unknow type", file=sys.stderr)
             stream.write(struct.pack('B', 128))
             return
         if type == 'f':
@@ -25,6 +25,7 @@ def encode(stream, id, args):
         stream.write(struct.pack('B', code))
         stream.write(struct.pack('<'+type, value))
     stream.write(struct.pack('B', 128))
+    stream.flush()
     
 
 def decode(stream, callback):
@@ -48,7 +49,7 @@ def decode(stream, callback):
                 if c == 129: # Début de trame
                     expected = 'id'
                 else:
-                    print('[proto] expected beginning flag (%d)' %c, file=sys.stderr)
+                    print('[atp.decode] expected beginning flag (%d)' %c, file=sys.stderr)
                     errors += 1
             elif expected == 'id':
                 c = data[0]
@@ -66,7 +67,7 @@ def decode(stream, callback):
                     try:
                         format = formats[c]
                     except KeyError:
-                        print('[proto] unknow format (%d), waiting next flag'
+                        print('[atp.decode] unknow format (%d), waiting next flag'
                                 %c, file=sys.stderr)
                         errors += 1
                         expected = 'begin'
@@ -74,8 +75,13 @@ def decode(stream, callback):
                     value = b''
                     expected = 'data'
             elif expected == 'data':
-                value = struct.unpack(format, data[0:length])
-                data = data[length:]
-                args.append(value[0])
-                expected = 'type'
-                length = 1
+                try:
+                    value = struct.unpack(format, data[0:length])
+                except struct.error:
+                    print("[atp.decode] struct.unpack exception, ignoring argument", file=sys.stderr)
+                else:
+                    args.append(value[0])
+                finally:
+                    data = data[length:]
+                    expected = 'type'
+                    length = 1
