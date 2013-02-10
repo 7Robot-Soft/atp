@@ -32,10 +32,10 @@ Définition des types
 ====================
 129 = 0xf1 = 1000 0001 = Début de trame
   1 = 0x01 = 0000 0001 = unsigned char    (B)
-  2 = 0x02 = 0000 0010 = unsigned short   (S)
+  2 = 0x02 = 0000 0010 = unsigned short   (H)
   4 = 0x04 = 0000 0100 = unsigned int     (I)
  17 = 0x11 = 0001 0001 = signed char      (b)
- 18 = 0x12 = 0001 0010 = signed short     (s)
+ 18 = 0x12 = 0001 0010 = signed short     (h)
  20 = 0x14 = 0001 0100 = signed int       (i)
  36 = 0x24 = 0010 0100 = unsigned float   (f)
 128 = 0xf0 = 1000 0000 = Fin de trame
