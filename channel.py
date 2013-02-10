@@ -14,6 +14,13 @@ class MPacket:
             self.direction = direction
         self.attrs = attrs
 
+class Proto:
+    error = MPacket(253, "pic")
+    getId = MPacket(254, "arm")
+    sendId = MPacket(255, "pic", [
+            ("id", "I")
+        ])
+
 class Channel:
     
     def __init__(self, protoDef, socket, callback):
@@ -27,9 +34,16 @@ class Channel:
         self._thread = Thread(target=decode, args=(self._file.buffer, self._recv))
         self._desc = {}
 
+        self.parseProto(protoDef)
+        if issubclass(protoDef, Proto):
+            self.parseProto(Proto)
+
+        self._thread.start()
+
+    def parseProto(self, protoDef):
         for attrn in protoDef.__dict__:
             attr = protoDef.__getattribute__(protoDef, attrn)
-            if isinstance(attr, MPacket): 
+            if isinstance(attr, MPacket):
                 if attrn in self.__dict__:
                     print("Warning: '%s' is a reserved packet name, ignoring" %attrn,
                             file=sys.stderr)
@@ -39,8 +53,6 @@ class Channel:
                         self._desc[attr.id] = attr
                     if attr.direction == "arm" or attr.direction == "both":
                         self.__setattr__(attrn, self._create_send(attrn, attr))
-
-        self._thread.start()
 
     def _create_send(self, name, desc):
         def send(*args):

@@ -7,9 +7,9 @@
 # i  signed int 
 # f  float
 
-from channel import MPacket
+from channel import MPacket, Proto
 
-class Asserv:
+class Asserv(Proto):
     type = 1
 
     dist = MPacket(10, "arm", [
@@ -24,7 +24,8 @@ class Asserv:
             ("y", "f")
         ])
 
-    getId = MPacket(254, "arm")
-    idAnswer = MPacket(255, "pic", [
-            ("id", "I")
+    goTo = MPacket(126, "arm", [
+            ("x", "f"),
+            ("y", "f"),
+            ("theta", "f")
         ])
