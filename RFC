@@ -74,7 +74,7 @@ ID réservés
 ===========
 250 : réservé pour une utilisation futur
 251 : réservé pour une utilisation futur
-252 : réservé pour une utilisation futur
+252 : message de test comportant tous les types possibles
 253 : signalisation d’une erreur
 254 : demande d’identification
 255 : identification
