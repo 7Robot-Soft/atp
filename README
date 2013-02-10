@@ -21,5 +21,5 @@ l’ordre dans lequel ils ont été reçu.
 Les fichiers encode.py et decode.py sont des exemples de programme s’appuyant
 sur le module atp pour encoder et décoder des trames. Vous pouvez les tester
 de la manière suivante :
-./decode.py < sample
+./decode.py < atp-sample
 ./encode.py 123 -78@i 22@H 5.326@f | ./decode.py
