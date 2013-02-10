@@ -66,15 +66,15 @@ son login pour être mit en relation avec le tcphub approprié.
 Répartition des id
 ==================
 Les id peuvent être réutilisé d’un périphérique à l’autre puisque les messages
-circulent sur des flux distincts et non plus sur un bus commun. Cependant, si
-cela n’est pas trop coûteux, nous pourrons essayer un minimum de ne pas
-réutiliser les id afin d’éviter les erreurs.
+circulent sur des flux distincts et non plus sur un bus commun. Cependant,
+certain id sont réservé à un usage commun entre toute les cartes.
+Pour voir la répartition des IDs, se référer à protos.py.
 
-Rappel: les id 254 et 255 sont réservé, tous périphérique confondu, à leur
-identification !
-
-Pic asserv :
-------------
-
-Pic capteurs :
---------------
+ID réservés
+===========
+250 : réservé pour une utilisation futur
+251 : réservé pour une utilisation futur
+252 : réservé pour une utilisation futur
+253 : signalisation d’une erreur
+254 : demande d’identification
+255 : identification
