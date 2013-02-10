@@ -10,7 +10,7 @@
 from packet import Packet
 
 # yymmjjhhmm
-version = 1302114207
+version = 1302110058
 
 class Proto:
     test = Packet(252, "both", [
