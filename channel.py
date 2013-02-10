@@ -1,25 +1,8 @@
 from atp import encode, decode
 from threading import Thread, Event
 import sys
-
-class MPacket:
-    
-    def __init__(self, id, direction = "both", attrs = []):
-        self.id = id
-        if direction not in [ "pic", "arm", "both" ]:
-            print("Warning: direction must be 'pic', 'arm' or 'both'. "
-                "Assume 'both'.", file=sys.stderr)
-            self.direction = "both"
-        else:
-            self.direction = direction
-        self.attrs = attrs
-
-class Proto:
-    error = MPacket(253, "pic")
-    getId = MPacket(254, "arm")
-    sendId = MPacket(255, "pic", [
-            ("id", "I")
-        ])
+from packet import Packet
+from protos import Proto
 
 class Channel:
     
@@ -43,7 +26,7 @@ class Channel:
     def parseProto(self, protoDef):
         for attrn in protoDef.__dict__:
             attr = protoDef.__getattribute__(protoDef, attrn)
-            if isinstance(attr, MPacket):
+            if isinstance(attr, Packet):
                 if attrn in self.__dict__:
                     print("Warning: '%s' is a reserved packet name, ignoring" %attrn,
                             file=sys.stderr)

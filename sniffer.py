@@ -2,9 +2,11 @@
 
 from time import sleep
 import socket
-from channel import Channel, MPacket, Proto
+from channel import Channel
+from packet import Packet
 from sys import argv, exit
 import protos
+from protos import Proto
 
 def print_packet(name, args): 
     print("[%s]" %name) 
@@ -14,7 +16,7 @@ def print_packet(name, args):
 def set_direction(cls):
     for attrn in cls.__dict__:
         attr = cls.__getattribute__(cls, attrn)
-        if isinstance(attr, MPacket):
+        if isinstance(attr, Packet):
             attr.direction = "pic"
 
 if __name__=="__main__":

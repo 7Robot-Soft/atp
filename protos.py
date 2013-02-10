@@ -7,25 +7,55 @@
 # i  signed int 
 # f  float
 
-from channel import MPacket, Proto
+from packet import Packet
+
+# yymmjjhhmm
+version = 1302114207
+
+class Proto:
+    test = Packet(252, "both", [
+            ("B", "B"),
+            ("H", "H"),
+            ("I", "I"),
+            ("b", "b"),
+            ("h", "h"),
+            ("i", "i"),
+            ("f", "f")
+        ])
+    error = Packet(253, "pic")
+    getId = Packet(254, "arm")
+    id = Packet(255, "pic", [
+            ("id", "I")
+        ])
 
 class Asserv(Proto):
-    type = 1
+    type = 5
 
-    dist = MPacket(10, "arm", [
+    dist = Packet(10, "arm", [
             ("dist", "I")
         ])
-    stop = MPacket(11, "arm")
-    done = MPacket(12, "pic")
+    stop = Packet(11, "arm")
+    done = Packet(12, "pic")
 
-    getPos = MPacket(20, "arm")
-    pos = MPacket(21, "pic", [
+    getPos = Packet(20, "arm")
+    pos = Packet(21, "pic", [
             ("x", "f"),
             ("y", "f")
         ])
 
-    goTo = MPacket(126, "arm", [
+    goTo = Packet(126, "arm", [
             ("x", "f"),
             ("y", "f"),
             ("theta", "f")
+        ])
+
+class Captor(Proto):
+    type = 2
+
+    getValue = Packet(1, "arm", [
+            ("id", "I")
+        ])
+    value = Packet(2, "pic", [
+            ("id", "I"),
+            ("value", "f")
         ])
