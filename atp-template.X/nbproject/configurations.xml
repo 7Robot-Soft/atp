@@ -7,6 +7,8 @@
       <itemPath>header.h</itemPath>
       <itemPath>atp.h</itemPath>
       <itemPath>atp-user.h</itemPath>
+      <itemPath>atp-captor.h</itemPath>
+      <itemPath>atp-proto.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LibraryFiles"
                    displayName="Library Files"
@@ -26,6 +28,8 @@
       <itemPath>main.c</itemPath>
       <itemPath>user-interrupts.c</itemPath>
       <itemPath>atp.c</itemPath>
+      <itemPath>atp-captor.c</itemPath>
+      <itemPath>atp-proto.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

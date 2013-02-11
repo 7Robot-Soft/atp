@@ -7,11 +7,16 @@
 #ifndef ATP_H
 #define	ATP_H
 
+#include "atp-proto.h"
+#include "atp-user.h"
+
 void AtpInit();
 
-void AtpSendBytes(char *bytes, int count);
-void AtpSendText(char *str);
-void AtpSendId();
+void SendBytes(char *bytes, int count);
+void SendText(char *str);
+
+void SendBoardId();
+void AtpTest();
 
 #endif	/* ATP_H */
 

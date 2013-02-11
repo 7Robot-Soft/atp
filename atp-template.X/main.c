@@ -39,11 +39,6 @@ _FICD(ICS_PGD1 & JTAGEN_OFF);
 /* Main Program                                                               */
 /******************************************************************************/
 
-void delay_ms(int ms)
-{
-    __delay_ms(ms);
-}
-
 int16_t main(void)
 {
     ConfigureOscillator();
@@ -51,14 +46,8 @@ int16_t main(void)
     
     AtpInit();
 
-    AtpSendId();
-
     while(1) {
-        //led = led ^ 1;
         __delay_ms(1000);
-        //AtpSendId();
-        //__delay_ms(1000);
-        //AtpSendError();
-        //AtpSendText(" Ceci est un message tres tres tres, mais alors vraiment tres tres long !");
+        //AtpTest();
     }
 }

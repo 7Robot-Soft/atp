@@ -7,7 +7,6 @@
 #include <string.h>
 
 #include "atp.h"
-#include "atp-user.h"
 #include "header.h"
 
 #if SEND_PRIO <= RECV_PRIO
@@ -22,13 +21,69 @@
 
 #define BRGVAL ((FCY / BAUDRATE / 16) - 1)
 
-void sendInit();
-void recvInit();
+// Variables d?envoi
+typedef struct {
+    char buf[BUF_SIZE];
+    int begin;
+    int end;
+    int full;
+    int flag;
+} buffer;
+static volatile buffer buffers[SEND_PRIO];
+static volatile int runLevel;
+
+// Variables de réceptions
+
+static int packetState;
+static int packetId;
+static int packetDataType;
+static int packetData[16];
+static int packetDataLen;
+static int packetDataPtr;
+
+static unsigned char ucharv[MAX_UCHAR];
+static int ucharc;
+static unsigned int ushortv[MAX_USHORT];
+static int ushortc;
+static unsigned long int uintv[MAX_UINT];
+static int uintc;
+static char charv[MAX_CHAR];
+static int charc;
+static int shortv[MAX_SHORT];
+static int shortc;
+static long int intv[MAX_INT];
+static int intc;
+static float floatv[MAX_FLOAT];
+static int floatc;
 
 void AtpInit() {
 
-    sendInit();
-    recvInit();
+    // Init des variables d?envoi
+    int i;
+    for (i = 0 ; i < SEND_PRIO ; i++) {
+        buffer buf = buffers[i];
+        buf.begin = 0;
+        buf.end = 0;
+        buf.full = 0;
+        buf.flag = 0;
+    }
+    runLevel = -1;
+
+    // Init des variables de réception
+    packetState = 1;
+    packetId = 0;
+    packetDataType = 0;
+    packetDataLen = 0;
+    packetDataPtr = 0;
+    ucharc = 0;
+    ushortc = 0;
+    uintc = 0;
+    charc = 0;
+    shortc = 0;
+    intc = 0;
+    floatc = 0;
+
+    // Init du port série
 
     OpenUART1(UART_EN & UART_IDLE_CON & UART_IrDA_DISABLE & UART_MODE_FLOW
         & UART_UEN_00 & UART_DIS_WAKE & UART_DIS_LOOPBACK
@@ -93,54 +148,26 @@ void AtpInit() {
 
 //##############################################################################
 
-
-typedef struct {
-    char buf[BUF_SIZE];
-    int begin;
-    int end;
-    int full;
-    int flag;
-} buffer;
-
-volatile buffer buffers[SEND_PRIO];
-
-volatile int runLevel;
-
-void sendInit() {
-    int i;
-    for (i = 0 ; i < SEND_PRIO ; i++) {
-        buffer buf = buffers[i];
-        buf.begin = 0;
-        buf.end = 0;
-        buf.full = 0;
-        buf.flag = 0;
-    }
-    runLevel = -1;
+void SendBoardId() {
+    SendId(BOARD_ID);
 }
 
-void AtpSendText(char *str)
+void AtpTest() {
+    SendTest(200, 40500, 100200, -100, -20100, -100200, 1.2345);
+}
+
+void SendText(char *str)
 {
-    AtpSendBytes(str, strlen(str));
+    SendBytes(str, strlen(str));
 }
 
-void AtpSendId() {
-    char bytes[5] = { 129, 255, 1, 5, 128 };
-    AtpSendBytes(bytes, 5);
-}
-
-void AtpSendError() {
-    char bytes[5] = { 129, 0, 128 };
-    AtpSendBytes(bytes, 3);
-}
-
-void AtpSendBytes(char *bytes, int count)
+void SendBytes(char *bytes, int count)
 {
     if (count == 0) return; // no data !
 
-    int prio = INTTREGbits.ILR3; // cpu pending interrupt priority level
+    int prio = _IPL;
 
     int end = buffers[prio].end;
-
     int pos;
     for (pos = 0 ; pos < count ; pos++) {
         buffers[prio].buf[end++] = bytes[pos];
@@ -152,64 +179,55 @@ void AtpSendBytes(char *bytes, int count)
                 buffers[prio].flag = 1;
                 IFS0bits.U1TXIF = 1;
             }
+            //led = 1;
             while (buffers[prio].full);
+            //led = 0;
         }
     }
-
     buffers[prio].end = end;
     buffers[prio].flag = 1;
     IFS0bits.U1TXIF = 1;
 }
 
+
+void updateRunLevel() {
+    int i;
+    for (i = RECV_PRIO ; i >= 0 ; i--) {
+        if (buffers[i].flag) {
+            runLevel = i;
+            //led = 1;
+            return;
+        }
+    }
+    //led = 0;
+    runLevel = -1;
+}
+
 //##############################################################################
-
-int packetState;
-int packetId;
-int packetDataType;
-int packetData[16];
-int packetDataLen;
-int packetDataPtr;
-
-unsigned char ucharv[MAX_UCHAR];
-int ucharc;
-unsigned int ushortv[MAX_USHORT];
-int ushortc;
-unsigned long int uintv[MAX_UINT];
-int uintc;
-char charv[MAX_CHAR];
-int charc;
-int shortv[MAX_SHORT];
-int shortc;
-long int intv[MAX_INT];
-int intc;
-float floatv[MAX_FLOAT];
-int floatc;
 
 void processPacket() {
     led = led ^ 1;
-    if (packetId == 254) {
-        AtpSendId();
+    if (processProto(packetId, ucharv, ucharc,
+            ushortv, ushortc,
+            uintv, uintc,
+            charv, charc,
+            shortv, shortc,
+            intv, intc,
+            floatv, floatc)) {
+        return;
     }
-#ifdef ANSWER_ERROR
-    else {
-        AtpSendError();
+    if (BOARD_PROCESSOR(packetId, ucharv, ucharc,
+            ushortv, ushortc,
+            uintv, uintc,
+            charv, charc,
+            shortv, shortc,
+            intv, intc,
+            floatv, floatc)) {
+        return;
     }
+#ifdef REPORT_UNKNOW_PACKET
+    SendError();
 #endif
-}
-
-void recvInit() {
-    packetState = 1;
-    packetId = 0;
-    packetDataType = 0;
-    packetDataLen = 0;
-    packetDataPtr = 0;
-    ucharc = 0;
-    ushortc = 0;
-    uintc = 0;
-    charc = 0;
-    shortc = 0;
-    intc = 0;
-    floatc = 0;
 }
 
 int checkDataType(unsigned int type) {
@@ -244,6 +262,13 @@ void recv(unsigned int pending) {
         case 3:
             if (pending == 128) {
                 processPacket();
+                ucharc = 0;
+                ushortc = 0;
+                uintc = 0;
+                charc = 0;
+                shortc = 0;
+                intc = 0;
+                floatc = 0;
                 packetState = 1;
             } else if (checkDataType(pending)) {
                 packetDataType = pending;
@@ -252,51 +277,53 @@ void recv(unsigned int pending) {
                 packetDataPtr = 0;
             } else {
                 // error
+                ucharc = 0;
+                ushortc = 0;
+                uintc = 0;
+                charc = 0;
+                shortc = 0;
+                intc = 0;
+                floatc = 0;
                 packetState = 1;
             }
             break;
         case 4:
             packetData[packetDataPtr++] = pending;
             if (packetDataPtr == packetDataLen) {
+                long int i;
                 float f;
                 switch (packetDataType) {
                     case 1:
                         ucharv[ucharc++] = packetData[0];
                         break;
                     case 2:
-                        ushortv[ushortc] = packetData[0] << 8;
-                        ushortv[ushortc++] &= packetData[1];
+                        ushortv[ushortc++] = packetData[1] << 8 | packetData[0];
                         break;
                     case 4:
-                        uintv[uintc] = (unsigned long int)packetData[3] << 24;
-                        uintv[uintc] &= (unsigned long int)packetData[2] << 16;
-                        uintv[uintc] &= packetData[1] << 8;
-                        uintv[uintc++] &= packetData[0];
+                        uintv[uintc++] = (unsigned long int)packetData[3] << 24
+                                        | (unsigned long int)packetData[2] << 16
+                                        | packetData[1] << 8
+                                        | packetData[0];
                         break;
                     case 17:
                         charv[charc++] = packetData[0];
                         break;
                     case 18:
-                        shortv[shortc] = packetData[0] << 8;
-                        shortv[shortc++] &= packetData[1];
+                        shortv[shortc++] = packetData[1] << 8 | packetData[0];
                         break;
                     case 20:
-                        intv[intc] = (long int)packetData[3] << 24;
-                        intv[intc] &= (long int)packetData[2] << 16;
-                        intv[intc] &= packetData[1] << 8;
-                        intv[intc++] &= packetData[0];
+                        ((char*)&i)[0] = packetData[0];
+                        ((char*)&i)[1] = packetData[1];
+                        ((char*)&i)[2] = packetData[2];
+                        ((char*)&i)[3] = packetData[3];
+                        intv[intc++] = i;
                         break;
                     case 36:
-                        ((char*)&f)[3] = packetData[3];
-                        ((char*)&f)[2] = packetData[2];
-                        ((char*)&f)[1] = packetData[1];
                         ((char*)&f)[0] = packetData[0];
+                        ((char*)&f)[1] = packetData[1];
+                        ((char*)&f)[2] = packetData[2];
+                        ((char*)&f)[3] = packetData[3];
                         floatv[floatc++] = f;
-                        /*floatv[floatc] = (long int)packetData[3] << 24;
-                        floatv[floatc] &= (long int)packetData[2] << 16;
-                        floatv[floatc] &= (long int)packetData[1] << 8;
-                        floatv[floatc++] &= (long int)packetData[0];*/
-                        //floatv[floatc++] = i;
                         break;
                 }
                 packetState = 3;
@@ -327,17 +354,6 @@ void __attribute__((interrupt, no_auto_psv)) _U1RXInterrupt(void)
  *
  *************************************************/
 
-void updateRunLevel() {
-    int i;
-    for (i = RECV_PRIO ; i >= 0 ; i--) {
-        if (buffers[i].flag) {
-            runLevel = i;
-            return;
-        }
-    }
-    runLevel = -1;
-}
-
 void __attribute__((__interrupt__, no_auto_psv)) _U1TXInterrupt(void)
 {
     IFS0bits.U1TXIF = 0; // clear TX interrupt flag
@@ -345,7 +361,7 @@ void __attribute__((__interrupt__, no_auto_psv)) _U1TXInterrupt(void)
     if (runLevel < 0) {
         updateRunLevel();
     }
-    
+
     while (!U1STAbits.UTXBF && runLevel >= 0) {
         if (buffers[runLevel].begin != buffers[runLevel].end || buffers[runLevel].full) {
             buffers[runLevel].full = 0;
@@ -354,6 +370,7 @@ void __attribute__((__interrupt__, no_auto_psv)) _U1TXInterrupt(void)
         }
         if (buffers[runLevel].begin == buffers[runLevel].end) {
             buffers[runLevel].flag = 0;
+            led = 0;
             updateRunLevel();
         }
     }

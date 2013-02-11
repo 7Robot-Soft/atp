@@ -8,11 +8,11 @@
 #ifndef ATP_USER_H
 #define	ATP_USER_H
 
-// Numéro du périphérique
-#define BOARD_ID 5
+// Fonction de communication spécifique au rôle du pic
+#include "atp-captor.h"
 
 // Vitesse de transmission, défaut : 115200
-#define BAUDRATE 9600
+#define BAUDRATE 115200
 
 // Taille des buffers de transmission
 // Doit être supérieur à la longueur maximal du plus long paquet envoyé
@@ -26,10 +26,14 @@
 // Vous pouvez envoyer des paquets seulement depuis des interruption de priorité
 // inférieur strictement à SEND_PRIO (ie si vous voulez envoyer un paquet depuis
 // une interruption déclenché par un capteur, cette interruption doit être de
-// priorité strictement inférieur à SEND_PRIO ; rien ne vous empèche d?utiliser
+// priorité strictement inférieur à SEND_PRIO ; rien ne vous empèche d'utiliser
 // des interruptions de priorité supérieur à égal à SEND_PRIO tant que vous
-// n?envoyé aucun paquet).
+// n'envoyez aucun paquet).
 #define SEND_PRIO 6
+
+// La définition de cette variable déclenche l'envoit d'un paquet de
+// notification d'erreur (message d'id inconnu)
+#define REPORT_UNKNOW_PACKET
 
 
 #define MAX_UCHAR 8
