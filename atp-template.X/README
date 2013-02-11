@@ -9,7 +9,8 @@ de description de la sémantique du protocole, protos.py.
 Pour utiliser ce module, il vous faut :
 * Importer les fichiers atp.c, atp.h et atp-user.h dans votre projet.
 * Inclure le fichier atp.h.
-* Éventuellement regénérer les autres fichiers (./gen.py).
+* Appeler la fonction AtpInit() au démarrage du pic.
+* Générer les autres fichiers (./gen.py).
 * Importer atp-proto.c et atp-proto.h. Il s’agit de la partie commune à tous
 les protocoles, quelque soit la carte.
 * Importer atp-<board>.c et atp-<board>.h. Il s’agit de la partie spécifique à
