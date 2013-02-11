@@ -1,4 +1,8 @@
+// Fichier auto-généré à partir de la version 1302110058 du fichier de protocole
+
 #include "atp.h"
+
+__attribute__((weak)) void OnGetValue(unsigned long int id) {}
 
 void SendValue(unsigned long int id, float value) {
     char bytes[] = { 
@@ -18,8 +22,6 @@ void SendValue(unsigned long int id, float value) {
         };
     SendBytes(bytes, 13);
 }
-
-__attribute__((weak)) void OnGetValue(unsigned long int id) {}
 
 int processCaptor(int id,
             unsigned char *ucharv, int ucharc,

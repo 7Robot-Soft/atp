@@ -1,3 +1,5 @@
+// Fichier auto-généré à partir de la version 1302110058 du fichier de protocole
+
 #ifndef _CAPTOR_H_
 #define _CAPTOR_H_
 
@@ -5,10 +7,10 @@
 #define BOARD_NAME Captor
 #define BOARD_PROCESSOR processCaptor
 
-void SendValue(unsigned long int id, float value);
-
 // You should define this function
 void OnGetValue(unsigned long int id);
+
+void SendValue(unsigned long int id, float value);
 
 int processCaptor(int id,
             unsigned char *ucharv, int ucharc,

@@ -1,7 +1,32 @@
+// Fichier auto-généré à partir de la version 1302110058 du fichier de protocole
+
 #include "atp.h"
+
+void SendError() {
+    char bytes[] = { 
+            129,
+            253,
+            128
+        };
+    SendBytes(bytes, 3);
+}
 
 __attribute__((weak)) void OnGetId() {
     SendBoardId();
+}
+
+void SendId(unsigned long int id) {
+    char bytes[] = { 
+            129,
+            255,
+            4,
+            ((char*)&id)[0],
+            ((char*)&id)[1],
+            ((char*)&id)[2],
+            ((char*)&id)[3],
+            128
+        };
+    SendBytes(bytes, 8);
 }
 
 void SendTest(unsigned char B, unsigned int H, unsigned long int I, char b, int h, long int i, float f) {
@@ -40,29 +65,6 @@ void SendTest(unsigned char B, unsigned int H, unsigned long int I, char b, int 
 
 __attribute__((weak)) void OnTest(unsigned char B, unsigned int H, unsigned long int I, char b, int h, long int i, float f) {
     SendTest(B, H, I, b, h, i, f);
-}
-
-void SendError() {
-    char bytes[] = { 
-            129,
-            253,
-            128
-        };
-    SendBytes(bytes, 3);
-}
-
-void SendId(unsigned long int id) {
-    char bytes[] = { 
-            129,
-            255,
-            4,
-            ((char*)&id)[0],
-            ((char*)&id)[1],
-            ((char*)&id)[2],
-            ((char*)&id)[3],
-            128
-        };
-    SendBytes(bytes, 8);
 }
 
 int processProto(int id,
