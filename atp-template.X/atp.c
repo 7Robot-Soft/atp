@@ -199,7 +199,6 @@ void updateRunLevel() {
             return;
         }
     }
-    //led = 0;
     runLevel = -1;
 }
 
@@ -370,7 +369,6 @@ void __attribute__((__interrupt__, no_auto_psv)) _U1TXInterrupt(void)
         }
         if (buffers[runLevel].begin == buffers[runLevel].end) {
             buffers[runLevel].flag = 0;
-            led = 0;
             updateRunLevel();
         }
     }

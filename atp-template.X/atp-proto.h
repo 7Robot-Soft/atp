@@ -8,7 +8,7 @@ void SendError();
 // You should define this function
 void OnGetId();
 
-void SendId(unsigned long int id);
+void SendId(unsigned char id);
 
 void SendTest(unsigned char B, unsigned int H, unsigned long int I, char b, int h, long int i, float f);
 

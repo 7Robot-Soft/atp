@@ -2,17 +2,16 @@
 
 #include "atp.h"
 
-__attribute__((weak)) void OnGetValue(unsigned long int id) {}
+__attribute__((weak)) void OnGetValue(unsigned char id) {}
 
-void SendValue(unsigned long int id, float value) {
+__attribute__((weak)) void OnSetThreshold(unsigned char id, float threshold) {}
+
+void SendValue(unsigned char id, float value) {
     char bytes[] = { 
             129,
             2,
-            4,
-            ((char*)&id)[0],
-            ((char*)&id)[1],
-            ((char*)&id)[2],
-            ((char*)&id)[3],
+            1,
+            id,
             36,
             ((char*)&value)[0],
             ((char*)&value)[1],
@@ -20,7 +19,7 @@ void SendValue(unsigned long int id, float value) {
             ((char*)&value)[3],
             128
         };
-    SendBytes(bytes, 13);
+    SendBytes(bytes, 10);
 }
 
 int processCaptor(int id,
@@ -32,7 +31,12 @@ int processCaptor(int id,
             long int *intv, int intc,
             float *floatv, int floatc) {
     if (id == 1) {
-        OnGetValue(uintv[0]);
+        OnGetValue(ucharv[0]);
+        return 1;
+    }
+    if (id == 3) {
+        OnSetThreshold(ucharv[0],
+            floatv[0]);
         return 1;
     }
     return 0;

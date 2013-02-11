@@ -8,9 +8,12 @@
 #define BOARD_PROCESSOR processCaptor
 
 // You should define this function
-void OnGetValue(unsigned long int id);
+void OnGetValue(unsigned char id);
 
-void SendValue(unsigned long int id, float value);
+// You should define this function
+void OnSetThreshold(unsigned char id, float threshold);
+
+void SendValue(unsigned char id, float value);
 
 int processCaptor(int id,
             unsigned char *ucharv, int ucharc,

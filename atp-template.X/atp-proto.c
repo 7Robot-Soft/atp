@@ -15,18 +15,15 @@ __attribute__((weak)) void OnGetId() {
     SendBoardId();
 }
 
-void SendId(unsigned long int id) {
+void SendId(unsigned char id) {
     char bytes[] = { 
             129,
             255,
-            4,
-            ((char*)&id)[0],
-            ((char*)&id)[1],
-            ((char*)&id)[2],
-            ((char*)&id)[3],
+            1,
+            id,
             128
         };
-    SendBytes(bytes, 8);
+    SendBytes(bytes, 5);
 }
 
 void SendTest(unsigned char B, unsigned int H, unsigned long int I, char b, int h, long int i, float f) {

@@ -10,7 +10,7 @@
 from packet import Packet
 
 # yymmjjhhmm
-version = 1302110058
+version = 1302111628
 
 class Proto:
     test = Packet(252, "both", [
@@ -25,7 +25,7 @@ class Proto:
     error = Packet(253, "pic")
     getId = Packet(254, "arm")
     id = Packet(255, "pic", [
-            ("id", "I")
+            ("id", "B")
         ])
 
 class Asserv(Proto):
@@ -53,9 +53,13 @@ class Captor(Proto):
     type = 2
 
     getValue = Packet(1, "arm", [
-            ("id", "I")
+            ("id", "B")
         ])
     value = Packet(2, "pic", [
-            ("id", "I"),
+            ("id", "B"),
             ("value", "f")
+        ])
+    setThreshold = Packet(3, "arm", [
+            ("id", "B"),
+            ("threshold", "f")
         ])

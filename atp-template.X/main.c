@@ -48,6 +48,5 @@ int16_t main(void)
 
     while(1) {
         __delay_ms(1000);
-        //AtpTest();
     }
 }
