@@ -108,7 +108,7 @@ def generateProto(dest, version, name, proto):
         h.write("#define BOARD_ID %d\n" %proto.type)
         h.write("#define BOARD_NAME %s\n" %name)
         h.write("#define BOARD_PROCESSOR process%s\n\n" %name)
-    for attrn in proto.__dict__:
+    for attrn in sorted(proto.__dict__):
         attr = proto.__getattribute__(proto, attrn)
         if isinstance(attr, Packet):
             if attr.direction == "pic" or attr.direction == "both":
@@ -126,7 +126,7 @@ def generateProto(dest, version, name, proto):
     prototype += "            float *floatv, int floatc)"
     h.write(prototype %name + ";\n\n")
     c.write(prototype %name + " {\n")
-    for attrn in proto.__dict__:
+    for attrn in sorted(proto.__dict__):
         attr = proto.__getattribute__(proto, attrn)
         if isinstance(attr, Packet):
             if attr.direction == "arm" or attr.direction == "both":
