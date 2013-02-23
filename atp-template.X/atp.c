@@ -187,6 +187,7 @@ void SendBytes(char *bytes, int count)
     buffers[prio].end = end;
     buffers[prio].flag = 1;
     IFS0bits.U1TXIF = 1;
+    // TODO : flush FTDI (par le ring indicator)
 }
 
 
