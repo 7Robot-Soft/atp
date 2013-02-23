@@ -34,6 +34,8 @@ Définition des types
   1 = 0x01 = 0000 0001 = unsigned char    (B)
   2 = 0x02 = 0000 0010 = unsigned short   (H)
   4 = 0x04 = 0000 0100 = unsigned int     (I)
+132 = 0x84 = 1000 0100 = timestamp        (I)
+148 = 0x94 = 1001 0100 = millisecondes    (I)
  17 = 0x11 = 0001 0001 = signed char      (b)
  18 = 0x12 = 0001 0010 = signed short     (h)
  20 = 0x14 = 0001 0100 = signed int       (i)
@@ -43,11 +45,16 @@ Définition des types
 Rappel : autre que le type 128, aucun ne peut avoir ses 4 bits de poids faible
 nuls.
 
+Les types 132 et 148 sont des alias pour le type 4, mais réservés pour
+l’horodatage des messages. Globalement, les types supérieurs à 128 sont
+particulier et sont réservé à un usage spécifique.
+
 Conformément à l’architecture des pics, on utilisera un codage little-endiend.
 
 Entre parenthèse est spécifié pour chaque type la lettre qui le désigne d’après
 le manuel d’utilisation des fonctions pack et unpack de module python struct.
-Elles sont utile à l’utilisation de programme encode.py.
+Elles sont utile à l’utilisation du programme encode.py et du programme
+decode.py.
 
 
 Identification des cartes

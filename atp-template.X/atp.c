@@ -239,6 +239,8 @@ int checkDataType(unsigned int type) {
         case 18:
         case 20:
         case 36:
+        case 132:
+        case 148:
             return 1;
         default:
             return 0;

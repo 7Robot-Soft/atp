@@ -1,4 +1,4 @@
-static int authorizedtypes[] = { 1, 2, 4, 17, 18, 20, 36, -1 };
+static int authorizedtypes[] = { 1, 2, 4, 17, 18, 20, 36, 132, 148, -1 };
 
 int checktype(int type)
 {
