@@ -49,7 +49,7 @@ class Asserv(Proto):
             ("theta", "f")
         ])
 
-class Captor(Proto):
+class Sensor(Proto):
     type = 2
 
     getValue = Packet(1, "arm", [
