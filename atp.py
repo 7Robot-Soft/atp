@@ -6,8 +6,9 @@ import sys
 formats = { 1 : '<B', 2 : '<H', 4 : '<I', 17 : '<b', 18 : '<h', 20 : '<i', 36 : '<f' }
 
 def encode(stream, id, args):
-    stream.write(struct.pack('B', 129))
-    stream.write(struct.pack('B', int(id)))
+    buffer = bytearray()
+    buffer += struct.pack('B', 129)
+    buffer += struct.pack('B', int(id))
     for value, type in args:
         code = None
         for c, f in formats.items():
@@ -16,14 +17,15 @@ def encode(stream, id, args):
                 break
         if code == None:
             print("[atp.encode] unknow type", file=sys.stderr)
-            stream.write(struct.pack('B', 128))
+            buffer += struct.pack('B', 128)
             return
         if type == 'f':
             value = float(value)
         else:
             value = int(value)
-        stream.write(struct.pack('B', code))
-        stream.write(struct.pack('<'+type, value))
+        buffer += struct.pack('B', code)
+        buffer += struct.pack('<'+type, value)
+    stream.write(buffer)
     stream.write(struct.pack('B', 128))
     stream.flush()
     
