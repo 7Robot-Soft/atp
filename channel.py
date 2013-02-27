@@ -6,7 +6,7 @@ from protos import Proto
 
 class Channel:
     
-    def __init__(self, protoDef, socket, callback):
+    def __init__(self, protoDef, socket, callback, genAll = False):
         
         Thread.__init__(self)
         self._running = Event()
@@ -17,13 +17,13 @@ class Channel:
         self._thread = Thread(target=decode, args=(self._file.buffer, self._recv))
         self._desc = {}
 
-        self.parseProto(protoDef)
+        self.parseProto(protoDef, genAll)
         if issubclass(protoDef, Proto):
             self.parseProto(Proto)
 
         self._thread.start()
 
-    def parseProto(self, protoDef):
+    def parseProto(self, protoDef, genAll = False):
         for attrn in protoDef.__dict__:
             attr = protoDef.__getattribute__(protoDef, attrn)
             if isinstance(attr, Packet):
@@ -31,10 +31,12 @@ class Channel:
                     print("Warning: '%s' is a reserved packet name, ignoring" %attrn,
                             file=sys.stderr)
                 else:
-                    if attr.direction == "pic" or attr.direction == "both":
+                    if attr.direction == "pic" or attr.direction == "both" \
+                            or genAll:
                         attr.name = attrn
                         self._desc[attr.id] = attr
-                    if attr.direction == "arm" or attr.direction == "both":
+                    if attr.direction == "arm" or attr.direction == "both" \
+                            or genAll:
                         self.__setattr__(attrn, self._create_send(attrn, attr))
 
     def _create_send(self, name, desc):
