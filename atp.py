@@ -16,7 +16,8 @@ def encode(stream, id, args):
                 code = c
                 break
         if code == None:
-            print("[atp.encode] unknow type", file=sys.stderr)
+            print("[atp.encode] unknow type, assuming unsigned char",
+                    file=sys.stderr)
             buffer += struct.pack('B', 128)
             return
         if type == 'f':
