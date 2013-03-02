@@ -7,12 +7,16 @@
 # i  signed int 
 # f  float
 
-from packet import Packet
+from protos import Packet, Proto
 
 # yymmjjhhmm
-version = 1302111628
+version = 1303020239
 
-class Proto:
+class Common(Proto):
+    def __init__(self):
+        print("Common")
+        super(Common, self)
+
     test = Packet(252, "both", [
             ("B", "B"),
             ("H", "H"),
