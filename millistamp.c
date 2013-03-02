@@ -36,13 +36,13 @@ void millistamp(FILE *in, FILE *out)
                 if (pending == 128) {
                     // fin de trame
                     gettimeofday(&time, NULL);
-                    buffer[bufptr-1] = 4;
+                    buffer[bufptr-1] = 132;
                     int sec = time.tv_sec;
                     buffer[bufptr++] = sec & 0xFF;
                     buffer[bufptr++] = (sec >> 8) & 0xFF;
                     buffer[bufptr++] = (sec >> 16) & 0xFF;
                     buffer[bufptr++] = (sec >> 24) & 0xFF;
-                    buffer[bufptr++] = 4;
+                    buffer[bufptr++] = 148;
                     int msec = time.tv_usec;
                     buffer[bufptr++] = msec & 0xFF;
                     buffer[bufptr++] = (msec >> 8) & 0xFF;
