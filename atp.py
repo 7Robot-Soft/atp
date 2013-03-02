@@ -55,6 +55,7 @@ def decode(stream, callback):
     while True:
         c = stream.read(1)
         if not len(c):
+            callback(-1, [])
             sys.exit()
         data += c
         while len(data) >= length:
