@@ -7,7 +7,7 @@
 #ifndef ATP_H
 #define	ATP_H
 
-#include "atp-proto.h"
+#include "atp-common.h"
 #include "atp-user.h"
 
 void AtpInit();
