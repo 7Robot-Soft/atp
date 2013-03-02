@@ -58,7 +58,7 @@ class Channel:
 
 
 def print_packet(name, args):
-    print(name)
+    print("[%s]" %name)
     for arg in args:
         print("\t%s:" %arg, args[arg])
 
