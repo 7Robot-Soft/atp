@@ -65,6 +65,16 @@ def decode(stream, callback):
                 if c == 128: # Fin de trame
                     callback(id, args)
                     expected = 'begin'
+                elif c == 132: # timestamp
+                    format = formats[1]
+                    length = c & 0b1111
+                    value = b''
+                    expected = 'data'
+                elif c == 148: # millisecondes
+                    format = formats[1]
+                    length = c & 0b1111
+                    value = b''
+                    expected = 'data'
                 else:
                     try:
                         format = formats[c]
