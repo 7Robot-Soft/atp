@@ -2,8 +2,18 @@
 
 import struct
 import sys
+from threading import Thread
 
 formats = { 1 : '<B', 2 : '<H', 4 : '<I', 17 : '<b', 18 : '<h', 20 : '<i', 36 : '<f' }
+
+def async(fcnt):
+
+    def run(*k, **kw):
+        t = Thread(target=fcnt, args=k, kwargs=kw)
+        t.start()
+        return t
+
+    return run
 
 def encode(stream, id, args):
     buffer = bytearray()
@@ -29,9 +39,10 @@ def encode(stream, id, args):
     buffer += struct.pack('B', 128)
     stream.write(buffer)
     stream.flush()
-    
 
+@async
 def decode(stream, callback):
+
     data = b''
     expected = 'begin'
     length = 1
