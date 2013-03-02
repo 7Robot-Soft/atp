@@ -42,7 +42,7 @@ def encode(stream, id, args):
     stream.flush()
 
 @async
-def decode(stream, callback, onEOF = None):
+def decode(stream, callback):
 
     data = b''
     expected = 'begin'
@@ -55,7 +55,7 @@ def decode(stream, callback, onEOF = None):
     while True:
         c = stream.read(1)
         if not len(c):
-            if onEOF: onEOF()
+            if onEOF: callback(-1, [])
             sys.exit()
         data += c
         while len(data) >= length:

@@ -12,13 +12,10 @@ class Channel:
 
         genAll = False
         proto = None
-        onEOF = None
 
         for arg in kwargs:
             if arg == "genAll":
                 genAll = kwargs[arg]
-            elif arg == "onEOF":
-                onEOF = kwargs[arg]
             elif arg == "proto":
                 proto = kwargs[arg]
             else:
@@ -39,6 +36,9 @@ class Channel:
             self._proto = None
 
         def recv(id, args):
+            if id == -1:
+                callback(None, args)
+                return
             if self._proto == None:
                 if id == 255:
                     if len(args) != 1:
@@ -79,7 +79,7 @@ class Channel:
                     arguments['milli'] = args[-1]
                 callback(packet_name, arguments)
 
-        thread = decode(stream, recv, onEOF)
+        thread = decode(stream, recv)
 
     def send(self, name, packet, *args):
         formats = list(map(lambda x: packet['args'][x], list(packet['args'])))
