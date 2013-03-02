@@ -8,7 +8,21 @@ import socket
 
 class Channel:
 
-    def __init__(self, stream, callback, proto = None, genAll = False):
+    def __init__(self, stream, callback, **kwargs):#proto = None, genAll = False):
+
+        genAll = False
+        proto = None
+        onEOF = None
+
+        for arg in kwargs:
+            if arg == "genAll":
+                genAll = kwargs[arg]
+            elif arg == "onEOF":
+                onEOF = kwargs[arg]
+            elif arg == "proto":
+                proto = kwargs[arg]
+            else:
+                print("Warning: unexpeced '%s' argument" %arg, file=sys.stderr)
 
         self._stream = stream
 
@@ -65,8 +79,7 @@ class Channel:
                     arguments['milli'] = args[-1]
                 callback(packet_name, arguments)
 
-
-        thread = decode(stream, recv)
+        thread = decode(stream, recv, onEOF)
 
     def send(self, name, packet, *args):
         formats = list(map(lambda x: packet['args'][x], list(packet['args'])))
@@ -109,4 +122,4 @@ if __name__ == "__main__":
         file = sock.makefile(mode="rw")
         stream = file.buffer
 
-    channel = Channel(stream, print_packet, args.proto, genAll = args.all)
+    channel = Channel(stream, print_packet, proto = args.proto, genAll = args.all)
