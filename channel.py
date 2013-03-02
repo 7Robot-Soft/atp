@@ -54,8 +54,10 @@ class Channel:
                 if packet['direction'] != 'pic' and packet['direction'] != 'both':
                     print("Warning: ignoring arm message", file=sys.stderr)
                     return
-                if len(packet['args']) != len(args) and len(packet['args']) + 2 != len(args):
-                    print("Warning: expected %d arguments, %d was given" %(len(packet['args']), len(args)), file=sys.stderr)
+                if len(packet['args']) != len(args) \
+                        and len(packet['args']) + 2 != len(args):
+                    print("Warning: expected %d arguments, %d was given"
+                            %(len(packet['args']), len(args)), file=sys.stderr)
                     return
                 arguments = dict(zip(packet['args'], args))
                 if len(args) == len(packet['args']) + 2:
@@ -81,14 +83,15 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='Decode ATP packets with semantical traduction.')
     parser.add_argument("-p", "--proto", dest='proto')
-    parser.add_argument("-a", "--address", dest='address', help="an host and a port to connect (HOST:PORT)")
+    parser.add_argument("-c", "--connect", dest='connect', help="connect to remote host (HOST:PORT)")
+    parser.add_argument("-a", "--all", dest='all', action='store_true')
     args = parser.parse_args()
 
     stream = sys.stdin.buffer
 
-    if args.address:
+    if args.connect:
         try:
-            host, port = args.address.split(':')
+            host, port = args.connect.split(':')
         except ValueError:
             print("%s: error: address must be in HOST:PORT format" %sys.argv[0])
             sys.exit(1)
@@ -106,4 +109,4 @@ if __name__ == "__main__":
         file = sock.makefile(mode="rw")
         stream = file.buffer
 
-    channel = Channel(stream, print_packet, args.proto)
+    channel = Channel(stream, print_packet, args.proto, genAll = args.all)
