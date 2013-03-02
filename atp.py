@@ -26,8 +26,8 @@ def encode(stream, id, args):
             value = int(value)
         buffer += struct.pack('B', code)
         buffer += struct.pack('<'+type, value)
+    buffer += struct.pack('B', 128)
     stream.write(buffer)
-    stream.write(struct.pack('B', 128))
     stream.flush()
     
 
