@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 
 import inspect
-import protos
-from protos import Proto
-from packet import Packet
+import semantic
+from protos import Proto, Packet
 import sys, os
 from atp import formats as formats_code
 
@@ -18,7 +17,6 @@ formats_name = { 'B' : 'unsigned char',
 formats_code = dict((v[1],k) for k, v in formats_code.items())
 
 def generateFunction(c, h, proto, name, paquet):
-    #name = "Send" + proto + name[0].upper() + name[1:]
     name = "Send" + name[0].upper() + name[1:]
     print("\tencoder '%s'" %name)
     args = ', '.join(map(lambda x: formats_name[x[1]]+" "+x[0], paquet.attrs))
@@ -83,7 +81,6 @@ def generateFunction(c, h, proto, name, paquet):
 
 def generateTemplate(c, h, proto, name, paquet):
 
-    #name = "Recv" + proto + name[0].upper() + name[1:]
     name = "On" + name[0].upper() + name[1:]
     print("\tdecoder '%s'" %name)
     args = ', '.join(map(lambda x: formats_name[x[1]]+" "+x[0], paquet.attrs))
@@ -177,9 +174,10 @@ def generateProto(dest, version, name, proto):
     h.close()
 
 def generateAll(dest):
-    for name, obj in inspect.getmembers(protos,
+    for name, obj in inspect.getmembers(semantic,
             lambda x: inspect.isclass(x) and issubclass(x, Proto)):
-        generateProto(dest, protos.version, name, obj)
+        if name != "Proto":
+            generateProto(dest, semantic.version, name, obj)
 
 if __name__=="__main__":
     if len(sys.argv) > 1:
