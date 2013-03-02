@@ -6,15 +6,16 @@ from protos import Proto
 
 class Channel:
     
-    def __init__(self, protoDef, socket, callback, genAll = False):
+    def __init__(self, protoDef, stream, callback, genAll = False):
         
         Thread.__init__(self)
         self._running = Event()
 
-        self._socket = socket
-        self._file = socket.makefile(mode="rw")
+        #self._socket = socket
+        #self._file = socket.makefile(mode="rw").buffer
+        self._file  = stream
         self._callback = callback
-        self._thread = Thread(target=decode, args=(self._file.buffer, self._recv))
+        self._thread = Thread(target=decode, args=(self._file, self._recv))
         self._desc = {}
 
         self.parseProto(protoDef, genAll)
@@ -46,7 +47,7 @@ class Channel:
 
     def _send(self, name, desc, *args):
         formats = list(map(lambda x: x[1], desc.attrs))
-        encode(self._file.buffer, desc.id, list(zip(args, formats)))
+        encode(self._file, desc.id, list(zip(args, formats)))
 
     def _recv(self, id, args):
         if id not in self._desc:

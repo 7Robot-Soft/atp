@@ -31,8 +31,9 @@ if __name__=="__main__":
         print("Error: '%s' is not a port number" %argv[2])
         exit(1)
 
-    socket = socket.socket()
-    socket.connect((argv[1], int(argv[2])))
+    s = socket.socket()
+    s.connect((argv[1], int(argv[2])))
+    sfd = s.makefile(mode="rw")
 
     try:
         semName = argv[3][0].capitalize() + argv[3][1:]
@@ -44,4 +45,4 @@ if __name__=="__main__":
     set_direction(sem)
     set_direction(Proto)
 
-    channel = Channel(sem, socket, print_packet)
+    channel = Channel(sem, sfd.buffer, print_packet)
