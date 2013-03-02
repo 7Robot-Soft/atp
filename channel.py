@@ -1,59 +1,95 @@
+#!/usr/bin/env python3
+
+from threading import Thread
 from atp import encode, decode
-from threading import Thread, Event
+import argparse
 import sys
-from packet import Packet
-from protos import Proto
+import socket
 
 class Channel:
-    
-    def __init__(self, protoDef, socket, callback, genAll = False):
-        
-        Thread.__init__(self)
-        self._running = Event()
 
-        self._socket = socket
-        self._file = socket.makefile(mode="rw")
-        self._callback = callback
-        self._thread = Thread(target=decode, args=(self._file.buffer, self._recv))
-        self._desc = {}
+    def __init__(self, stream, callback, proto = None, genAll = False):
 
-        self.parseProto(protoDef, genAll)
-        if issubclass(protoDef, Proto):
-            self.parseProto(Proto)
+        import protos
+        self._protos = protos.load(genAll)
 
-        self._thread.start()
+        if proto:
+            self._proto = self._protos[proto]
+        else:
+            self._proto = None
 
-    def parseProto(self, protoDef, genAll = False):
-        for attrn in protoDef.__dict__:
-            attr = protoDef.__getattribute__(protoDef, attrn)
-            if isinstance(attr, Packet):
-                if attrn in self.__dict__:
-                    print("Warning: '%s' is a reserved packet name, ignoring" %attrn,
-                            file=sys.stderr)
+        def recv(id, args):
+            if self._proto == None:
+                if id == 255:
+                    if len(args) != 1:
+                        print("Warning: invalid arguments count for id %d" %id, file=sys.stderr)
+                        return
+                    board = args[0]
+                    for proto_name in self._protos:
+                        proto = self._protos[proto_name]
+                        if proto["id"] == board:
+                            self._proto = proto
+                            print("Loading proto '%s'" %proto_name)
+                            recv(id, args)
+                    if self._proto == None:
+                        print("Warning: unknow board %d" %board, file=sys.stderr)
                 else:
-                    if attr.direction == "pic" or attr.direction == "both" \
-                            or genAll:
-                        attr.name = attrn
-                        self._desc[attr.id] = attr
-                    if attr.direction == "arm" or attr.direction == "both" \
-                            or genAll:
-                        self.__setattr__(attrn, self._create_send(attrn, attr))
+                    print("Warning: no protocol loaded, can't decode id %d" %id, file=sys.stderr)
+            else:
+                know_packet = False
+                for packet_name in self._proto['packets']:
+                    packet = self._proto['packets'][packet_name]
+                    if packet['id'] == id:
+                        know_packet = True
+                        break
+                if not know_packet:
+                    print("Warning: unknow packet id %d" %id, file=sys.stderr)
+                    return
+                if packet['direction'] != 'pic' and packet['direction'] != 'both':
+                    print("Warning: ignoring arm message", file=sys.stderr)
+                    return
+                if len(packet['args']) != len(args):
+                    print("Warning: expected %d arguments, %d was given" %(len(packet['args']), len(args)), file=sys.stderr)
+                    return
+                callback(packet_name, (dict(zip(packet['args'], args))))
 
-    def _create_send(self, name, desc):
-        def send(*args):
-            self._send(name, desc, *args)
-        return send
 
-    def _send(self, name, desc, *args):
-        formats = list(map(lambda x: x[1], desc.attrs))
-        encode(self._file.buffer, desc.id, list(zip(args, formats)))
+        thread = decode(stream, recv)
 
-    def _recv(self, id, args):
-        if id not in self._desc:
-            print("Warning: ignoring unknow packet (id = %d)" %id, file=sys.stderr)
-            return
-        if len(args) != len(self._desc[id].attrs):
-            print("Warning: invalid arguments count for this id (id = %d)" %id, file=sys.stderr)
-            return
-        names = map(lambda x: x[0], self._desc[id].attrs)
-        self._callback(self._desc[id].name, dict(zip(names, args)))
+
+def print_packet(name, args):
+    print(name)
+    for arg in args:
+        print("\t%s:" %arg, args[arg])
+
+
+if __name__ == "__main__":
+
+    parser = argparse.ArgumentParser(description='Decode ATP packets with semantical traduction.')
+    parser.add_argument("-p", "--proto", dest='proto')
+    parser.add_argument("-a", "--address", dest='address', help="an host and a port to connect (HOST:PORT)")
+    args = parser.parse_args()
+
+    stream = sys.stdin.buffer
+
+    if args.address:
+        try:
+            host, port = args.address.split(':')
+        except ValueError:
+            print("%s: error: address must be in HOST:PORT format" %sys.argv[0])
+            sys.exit(1)
+        try:
+            port = int(port)
+        except ValueError:
+            print("%s: error: PORT must be an positive integer" %sys.argv[0])
+            sys.exit(1)
+        try:
+            sock = socket.socket()
+            sock.connect((host, port))
+        except Exception as e:
+            print("%s:" %sys.argv[0], e)
+            sys.exit(1)
+        file = sock.makefile(mode="rw")
+        stream = file.buffer
+
+    channel = Channel(stream, print_packet, args.proto)
