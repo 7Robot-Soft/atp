@@ -1,5 +1,6 @@
 #-*- coding: utf-8 -*-
 
+import binascii
 import struct
 import sys
 
@@ -51,7 +52,7 @@ def decode(stream, callback):
                 if c == 129: # Début de trame
                     expected = 'id'
                 else:
-                    print('[atp.decode] expected beginning flag (%d)' %c, file=sys.stderr)
+                    print('[atp.decode] unexpected beginning flag (%d)' %c, file=sys.stderr)
                     errors += 1
             elif expected == 'id':
                 c = data[0]
@@ -66,12 +67,12 @@ def decode(stream, callback):
                     callback(id, args)
                     expected = 'begin'
                 elif c == 132: # timestamp
-                    format = formats[1]
+                    format = formats[4]
                     length = c & 0b1111
                     value = b''
                     expected = 'data'
                 elif c == 148: # millisecondes
-                    format = formats[1]
+                    format = formats[4]
                     length = c & 0b1111
                     value = b''
                     expected = 'data'
@@ -90,7 +91,7 @@ def decode(stream, callback):
                 try:
                     value = struct.unpack(format, data[0:length])
                 except struct.error:
-                    print("[atp.decode] struct.unpack exception, ignoring argument", file=sys.stderr)
+                    print("[atp.decode] struct.unpack exception, ignoring argument %s of format %s" % (binascii.hexlify(data[0:length]), format), file=sys.stderr)
                 else:
                     args.append(value[0])
                 finally:
