@@ -11,7 +11,7 @@ Pour utiliser ce module, il vous faut :
 * Inclure le fichier atp.h.
 * Appeler la fonction AtpInit() au démarrage du pic.
 * Générer les autres fichiers (./gen.py).
-* Importer atp-proto.c et atp-proto.h. Il s’agit de la partie commune à tous
+* Importer atp-common.c et atp-common.h. Il s’agit de la partie commune à tous
 les protocoles, quelque soit la carte.
 * Importer atp-<board>.c et atp-<board>.h. Il s’agit de la partie spécifique à
 votre carte.

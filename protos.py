@@ -1,65 +1,63 @@
-# Rappel des types struct.pack usuelles :
-# B  unsigned char
-# H  unsigned short
-# I  unsigned int 
-# b  signed char
-# h  signed short
-# i  signed int 
-# f  float
-
-from packet import Packet
-
-# yymmjjhhmm
-version = 1302111628
+import inspect
+from collections import OrderedDict
 
 class Proto:
-    test = Packet(252, "both", [
-            ("B", "B"),
-            ("H", "H"),
-            ("I", "I"),
-            ("b", "b"),
-            ("h", "h"),
-            ("i", "i"),
-            ("f", "f")
-        ])
-    error = Packet(253, "pic")
-    getId = Packet(254, "arm")
-    id = Packet(255, "pic", [
-            ("id", "B")
-        ])
+    pass
 
-class Asserv(Proto):
-    type = 5
+class Packet:
+    def __init__(self, id, direction = "both", attrs = []):
+        self.id = id
+        if direction not in [ "pic", "arm", "both" ]:
+            print("Warning: direction must be 'pic', 'arm' or 'both'. "
+                "Assume 'both'.", file=sys.stderr)
+            self.direction = "both"
+        else:
+            self.direction = direction
+        self.attrs = attrs
 
-    dist = Packet(10, "arm", [
-            ("dist", "I")
-        ])
-    stop = Packet(11, "arm")
-    done = Packet(12, "pic")
 
-    getPos = Packet(20, "arm")
-    pos = Packet(21, "pic", [
-            ("x", "f"),
-            ("y", "f")
-        ])
+def load(genAll = False):
 
-    goTo = Packet(126, "arm", [
-            ("x", "f"),
-            ("y", "f"),
-            ("theta", "f")
-        ])
+    import semantic
 
-class Sensor(Proto):
-    type = 2
+    protos = OrderedDict()
 
-    getValue = Packet(1, "arm", [
-            ("id", "B")
-        ])
-    value = Packet(2, "pic", [
-            ("id", "B"),
-            ("value", "f")
-        ])
-    setThreshold = Packet(3, "arm", [
-            ("id", "B"),
-            ("threshold", "f")
-        ])
+    for name, proto in inspect.getmembers(semantic,
+            lambda x: inspect.isclass(x) and issubclass(x, semantic.Proto)):
+        if name != "Proto" and name != "Common":
+            protos[name] = load_proto(proto, genAll)
+
+    return protos
+
+def load_proto(proto, genAll = False):
+
+    import semantic
+
+    p = OrderedDict()
+
+    p['id'] = proto.type
+    p['packets'] = OrderedDict()
+
+    for name, packet in inspect.getmembers(semantic.Common,
+            lambda x: isinstance(x, semantic.Packet)):
+        p['packets'][name] = load_packet(packet, genAll)
+
+    for name, packet in inspect.getmembers(proto,
+            lambda x: isinstance(x, semantic.Packet)):
+        p['packets'][name] = load_packet(packet, genAll)
+
+    return p
+
+def load_packet(packet, genAll = False):
+    p = OrderedDict()
+
+    p['id'] = packet.id
+    if genAll:
+        p['direction'] = 'both'
+    else:
+        p['direction'] = packet.direction
+    p['args'] = OrderedDict()
+    for arg, type in packet.attrs:
+        p['args'][arg] = type
+
+    return p

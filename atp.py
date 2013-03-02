@@ -3,8 +3,18 @@
 import binascii
 import struct
 import sys
+from threading import Thread
 
 formats = { 1 : '<B', 2 : '<H', 4 : '<I', 17 : '<b', 18 : '<h', 20 : '<i', 36 : '<f' }
+
+def async(fcnt):
+
+    def run(*k, **kw):
+        t = Thread(target=fcnt, args=k, kwargs=kw)
+        t.start()
+        return t
+
+    return run
 
 def encode(stream, id, args):
     buffer = bytearray()
@@ -17,7 +27,8 @@ def encode(stream, id, args):
                 code = c
                 break
         if code == None:
-            print("[atp.encode] unknow type", file=sys.stderr)
+            print("[atp.encode] unknow type, assuming unsigned char",
+                    file=sys.stderr)
             buffer += struct.pack('B', 128)
             return
         if type == 'f':
@@ -26,12 +37,13 @@ def encode(stream, id, args):
             value = int(value)
         buffer += struct.pack('B', code)
         buffer += struct.pack('<'+type, value)
+    buffer += struct.pack('B', 128)
     stream.write(buffer)
-    stream.write(struct.pack('B', 128))
     stream.flush()
-    
 
+@async
 def decode(stream, callback):
+
     data = b''
     expected = 'begin'
     length = 1
@@ -52,7 +64,7 @@ def decode(stream, callback):
                 if c == 129: # Début de trame
                     expected = 'id'
                 else:
-                    print('[atp.decode] unexpected beginning flag (%d)' %c, file=sys.stderr)
+                    print('[atp.decode] expected beginning flag (%d)' %c, file=sys.stderr)
                     errors += 1
             elif expected == 'id':
                 c = data[0]

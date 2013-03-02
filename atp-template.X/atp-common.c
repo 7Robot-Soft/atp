@@ -1,4 +1,4 @@
-// Fichier auto-généré à partir de la version 1302110058 du fichier de protocole
+// Fichier auto-généré à partir de la version 1303020239 du fichier de protocole
 
 #include "atp.h"
 
@@ -64,7 +64,7 @@ __attribute__((weak)) void OnTest(unsigned char B, unsigned int H, unsigned long
     SendTest(B, H, I, b, h, i, f);
 }
 
-int processProto(int id,
+int processCommon(int id,
             unsigned char *ucharv, int ucharc,
             unsigned int *ushortv, int ushortc,
             unsigned long int *uintv, int uintc,
