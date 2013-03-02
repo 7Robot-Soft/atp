@@ -17,7 +17,7 @@ class Channel:
             if arg == "genAll":
                 genAll = kwargs[arg]
             elif arg == "proto":
-                proto = kwargs[arg]
+                proto = kwargs[arg].capitalize()
             else:
                 print("Warning: unexpeced '%s' argument" %arg, file=sys.stderr)
 
