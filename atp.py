@@ -56,7 +56,7 @@ def decode(stream, callback, onEOF = None):
         c = stream.read(1)
         if not len(c):
             if onEOF: onEOF()
-            exit()
+            sys.exit()
         data += c
         while len(data) >= length:
             if expected == 'begin':
