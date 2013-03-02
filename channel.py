@@ -10,6 +10,8 @@ class Channel:
 
     def __init__(self, stream, callback, proto = None, genAll = False):
 
+        self._stream = stream
+
         import protos
         self._protos = protos.load(genAll)
 
@@ -55,6 +57,10 @@ class Channel:
 
 
         thread = decode(stream, recv)
+
+    def send(self, name, packet, *args):
+        formats = list(map(lambda x: packet['args'][x], list(packet['args'])))
+        encode(self._stream, packet['id'], list(zip(args, formats)))
 
 
 def print_packet(name, args):
