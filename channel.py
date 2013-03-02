@@ -17,6 +17,10 @@ class Channel:
 
         if proto:
             self._proto = self._protos[proto]
+            for packet_name in self._proto['packets']:
+                packet = self._proto['packets'][packet_name]
+                if packet['direction'] == "arm":
+                    pass
         else:
             self._proto = None
 
@@ -50,10 +54,14 @@ class Channel:
                 if packet['direction'] != 'pic' and packet['direction'] != 'both':
                     print("Warning: ignoring arm message", file=sys.stderr)
                     return
-                if len(packet['args']) != len(args):
+                if len(packet['args']) != len(args) and len(packet['args']) + 2 != len(args):
                     print("Warning: expected %d arguments, %d was given" %(len(packet['args']), len(args)), file=sys.stderr)
                     return
-                callback(packet_name, (dict(zip(packet['args'], args))))
+                arguments = dict(zip(packet['args'], args))
+                if len(args) == len(packet['args']) + 2:
+                    arguments['timestamp'] = args[-2]
+                    arguments['milli'] = args[-1]
+                callback(packet_name, arguments)
 
 
         thread = decode(stream, recv)
