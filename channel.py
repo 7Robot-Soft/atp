@@ -10,7 +10,7 @@ class Channel:
 
     def __init__(self, stream, callback, **kwargs):#proto = None, genAll = False):
 
-        genAll = False
+        genAll = True
         proto = None
 
         for arg in kwargs:
@@ -97,7 +97,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Decode ATP packets with semantical traduction.')
     parser.add_argument("-p", "--proto", dest='proto')
     parser.add_argument("-c", "--connect", dest='connect', help="connect to remote host (HOST:PORT)")
-    parser.add_argument("-a", "--all", dest='all', action='store_true')
     args = parser.parse_args()
 
     stream = sys.stdin.buffer
@@ -122,4 +121,4 @@ if __name__ == "__main__":
         file = sock.makefile(mode="rw")
         stream = file.buffer
 
-    channel = Channel(stream, print_packet, proto = args.proto, genAll = args.all)
+    channel = Channel(stream, print_packet, proto = args.proto)
