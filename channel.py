@@ -30,8 +30,8 @@ class Channel:
             self._proto = self._protos[proto]
             for packet_name in self._proto['packets']:
                 packet = self._proto['packets'][packet_name]
-                if packet['direction'] == "arm":
-                    pass
+                if packet['direction'] == "arm" or packet['direction'] == "both":
+                    self.__setattr__(packet_name, self._create_method(packet_name, packet))
         else:
             self._proto = None
 
@@ -80,6 +80,14 @@ class Channel:
                 callback(packet_name, arguments)
 
         thread = decode(stream, recv)
+
+    def _create_method(self, name, packet):
+        def send(*args):
+            if len(args) == len(packet['args']):
+                self.send(name, packet, *args)
+            else:
+                print("Warning: '%s' expects %d arguments, %d given, packet not sended !" %(name, len(packet['args']), len(args)), file=sys.stderr)
+        return send
 
     def send(self, name, packet, *args):
         formats = list(map(lambda x: packet['args'][x], list(packet['args'])))
