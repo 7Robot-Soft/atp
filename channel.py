@@ -10,7 +10,7 @@ class Channel:
 
     def __init__(self, stream, callback, **kwargs):#proto = None, genAll = False):
 
-        genAll = True
+        genAll = False
         proto = None
 
         for arg in kwargs:
@@ -121,4 +121,4 @@ if __name__ == "__main__":
         file = sock.makefile(mode="rw")
         stream = file.buffer
 
-    channel = Channel(stream, print_packet, proto = args.proto)
+    channel = Channel(stream, print_packet, proto = args.proto, genAll = True)
