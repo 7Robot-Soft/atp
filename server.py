@@ -6,11 +6,86 @@ import sys
 import urllib.parse
 import socket
 import cgi
+import argparse
+from string import Template
 
 import protos
 from channel import Channel
 
 PORT = 8001
+
+
+template_page = """<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="utf-8" />
+        <link type="text/css" rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/css/bootstrap.min.css" />
+        <link type="text/css" rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/css/bootstrap-responsive.min.css" />
+        <title>${TITLE}</title>
+    </head>
+    <body>
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container-fluid">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a href="" class="brand">Protocoles</a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav">${BANNER}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">${BODY}
+        </div>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+    </body>
+</html>
+"""
+
+template_banner = """
+                            <li${ACTIVE}><a href="?proto=${PROTO}">${PROTO}</a></li>"""
+
+template_home = """
+            <div class="hero-unit">
+                <h1>ATP Sender</h1>
+                <p>Please choose a protocole to start sending messages.</p>
+            </div>"""
+
+template_proto = """
+            <div class="hero-unit">
+                <h1>${PROTO}</h1>
+            </div>"""
+
+template_packet = """
+            <a name="${ANCRE}"></a>
+            <div class="row-fluid">
+                <div class="span12">
+                    <form method="POST" action="?proto=${PROTO}&packet=${PACKET}#${ANCRE}" class="form-horizontal well">
+                        <fieldset>
+                            <legend>${PACKET}</legend>${ARGS}
+                            <div class="control-group">
+                                <div class="controls">
+                                    <button type="submit" class="btn">Send</button>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>"""
+
+template_arg = """
+                            <div class="control-group">
+                                <label for="${PACKET}_${ARG}" class="control-label">${ARG}</label>
+                                <div class="controls">
+                                    <input type="text" id="${PACKET}_${ARG}" name="${PACKET}_${ARG}" /><br />
+                                </div>
+                            </div>"""
 
 class ATPHandler(http.server.SimpleHTTPRequestHandler):
 
@@ -69,120 +144,88 @@ class ATPHandler(http.server.SimpleHTTPRequestHandler):
         except Exception as e:
             return str(e)
 
-    def normal_header(self, title = ''):
+    def form_proto(self, proto_name, proto):
         self.send_response(200)
         self.send_header("Content-type", "text/html")
         self.end_headers()
 
-        self.wfile.write(b'<!DOCTYPE html>\n')
-        self.wfile.write(b'<html lang="fr">\n')
-        self.wfile.write(b'\t<head>\n')
-        self.wfile.write(b'\t\t<meta charset="utf-8" />\n')
-        self.wfile.write(b'\t\t<link type="text/css" rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/css/bootstrap.min.css" />\n')
-        self.wfile.write(b'\t\t<link type="text/css" rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/css/bootstrap-responsive.min.css" />\n')
-        self.wfile.write(b'\t\t<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>\n')
-        self.wfile.write(b'\t\t<script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>\n')
-        if title:
-            self.wfile.write(b'\t\t<title>ATP Sender</title>\n')
-        else:
-            self.wfile.write(bytes('\t\t<title>%s - ATP Sender</title>\n' %title, 'utf-8'))
-        self.wfile.write(b'\t</head>\n')
+        template = Template(template_page)
 
-    def form_proto(self, proto_name, proto):
-        self.normal_header()
-        self.wfile.write(b'\t<body>\n')
-        self.wfile.write(b'\t<div class="container">\n')
-        self.banner(proto_name)
-        self.wfile.write(b'\t<div class="hero-unit">\n')
-        self.wfile.write(bytes('\t\t<h1>%s</h1>\n' %proto_name, 'utf-8'))
-        self.wfile.write(b'\t</div>\n')
+        body = Template(template_proto).substitute(PROTO = proto_name)
 
         for packet in proto['packets']:
-            self.wfile.write(b'\t<div class="row-fluid">\n')
-            self.wfile.write(b'\t<div class="span12">\n')
-            self.form_packet(proto_name, packet, proto['packets'][packet], prefix = b'\t\t\t')
-            self.wfile.write(b'\t</div>\n')
-            self.wfile.write(b'\t</div>\n')
+            body += self.form_packet(proto_name, packet, proto['packets'][packet])
+        params = {}
+        params['TITLE'] = 'ATP Sender'
+        params['BANNER'] = self.banner()
+        params['BODY'] = body
 
-        self.wfile.write(b'\t</div>\n')
-        self.wfile.write(b'\t</body>\n')
-        self.wfile.write(b'</html>\n')
+        self.wfile.write(bytes(template.substitute(params), 'utf-8'))
 
-        self.wfile.flush()
+    def form_packet(self, proto_name, packet_name, packet):
+        params = {}
+        params['PROTO'] = proto_name
+        params['PACKET'] = packet_name
+        params['ANCRE'] = 'P'+packet_name
+        params['ARGS'] = self.form_args(packet_name, packet)
+        return Template(template_packet).substitute(params)
 
-    def form_packet(self, proto_name, packet_name, packet, prefix = b''):
-        self.wfile.write(prefix+bytes('\t<a name="%s"></a>\n' %('P'+packet_name), 'utf-8'))
-        self.wfile.write(prefix+bytes('<form method="POST" action="?proto=%s&amp;packet=%s#%s" class="well form-horizontal">\n' %(proto_name, packet_name, 'P'+packet_name), 'utf-8'))
-        self.wfile.write(prefix+b'\t<fieldset>\n')
-        self.wfile.write(prefix+bytes('\t\t<legend>%s</legend>\n' %packet_name, 'utf-8'))
+    def form_args(self, packet_name, packet):
+        args = ''
         for arg in packet['args']:
-            self.wfile.write(b'\t<div class="control-group">\n')
-            self.wfile.write(prefix+bytes('\t\t<label for="%s_%s" class="control-label">%s</label>\n' %(packet_name, arg, arg), 'utf-8'))
-            self.wfile.write(b'\t<div class="controls">\n')
-            self.wfile.write(prefix+bytes('\t\t<input type="text" id="%s" name="%s" /><br />\n' %(packet_name+'_'+arg, packet_name+'_'+arg), 'utf-8'))
-            self.wfile.write(b'\t</div>\n')
-            self.wfile.write(b'\t</div>\n')
-        self.wfile.write(b'\t<div class="control-group">\n')
-        self.wfile.write(b'\t<div class="controls">\n')
-        self.wfile.write(b'<button type="submit" class="btn">Send</button>\n')
-        self.wfile.write(b'\t</div>\n')
-        self.wfile.write(b'\t</div>\n')
-        self.wfile.write(prefix+b'\t</fieldset>\n')
-        self.wfile.write(prefix+b'</form>\n')
+            params = {}
+            params['PACKET'] = packet_name
+            params['ARG'] = arg
+            args += Template(template_arg).substitute(params)
+        return args
 
     def banner(self, pending_proto = None):
-        self.wfile.write(b'\t\t\t<div class="navbar navbar-inverse navbar-fixed-top">\n')
-        self.wfile.write(b'\t\t\t<div class="navbar-inner">\n')
-        self.wfile.write(b'\t\t\t<div class="container-fluid">\n')
-        self.wfile.write(b'\t\t\t<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">\n')
-        self.wfile.write(b'\t\t\t<span class="icon-bar"></span>\n')
-        self.wfile.write(b'\t\t\t<span class="icon-bar"></span>\n')
-        self.wfile.write(b'\t\t\t<span class="icon-bar"></span>\n')
-        self.wfile.write(b'\t\t\t</a>\n')
-        self.wfile.write(b'\t\t\t<a href="" class="brand">Protocoles</a>\n')
-        self.wfile.write(b'\t\t\t<div class="nav-collapse collapse">\n')
-        self.wfile.write(b'\t\t\t<ul class="nav">\n')
+        banner = ''
+        template = Template(template_banner)
         for proto in self.protos:
             if proto == pending_proto:
                 active = ' class="active"'
             else:
                 active = ''
-            self.wfile.write(bytes('\t\t\t\t<li%s><a href="?proto=%s">%s</a></li>\n' %(active, proto, proto), 'utf-8'))
-        self.wfile.write(b'\t\t\t</ul>\n')
-        self.wfile.write(b'\t\t\t</div>\n')
-        self.wfile.write(b'\t\t\t</div>\n')
-        self.wfile.write(b'\t\t\t</div>\n')
-        self.wfile.write(b'\t\t\t</div>\n')
-
+            banner += template.substitute(ACTIVE = active, PROTO = proto)
+        return banner
 
     def home(self):
-        self.normal_header()
-        self.wfile.write(b'\t<body>\n')
-        self.wfile.write(b'\t<div class="container">\n')
-        self.banner()
-        self.wfile.write(b'\t<div class="hero-unit">\n')
-        self.wfile.write(b'\t\t<h1>ATP Sender</h1>\n')
-        self.wfile.write(b'\t<p>Please choose a protocole to start sending messages.</p>\n')
-        self.wfile.write(b'\t</div>\n')
-        self.wfile.write(b'\t</body>\n')
-        self.wfile.write(b'</html>\n')
+        self.send_response(200)
+        self.send_header("Content-type", "text/html")
+        self.end_headers()
 
-        self.wfile.flush()
+        template = Template(template_page)
+
+        args = {}
+
+        args['TITLE'] = 'ATP Sender'
+        args['BANNER'] = self.banner()
+        args['BODY'] = """
+            <div class="hero-unit">
+                <h1>ATP Sender</h1>
+                <p>Please choose a protocole to start sending messages.</p>
+            </div>"""
+
+        self.wfile.write(bytes(template.substitute(args), 'utf-8'))
 
 if __name__ == "__main__":
+
+    parser = argparse.ArgumentParser(description='GUI to send ATP packets.', add_help=False)
+    parser.add_argument('-h', '--host', dest='host', default='localhost', help='connect to remote host')
+    parser.add_argument('-p', '--port', dest='port', default='1300', help='port offset')
+    parser.add_argument('-l', '--listen', dest='listen', default='8000', help='server listen on specified port')
+    args = parser.parse_args()
 
     ATPHandler.channels = {}
     ATPHandler.files = {}
     for proto in ATPHandler.protos:
         sock = socket.socket()
-        sock.connect(("localhost", 1300 + ATPHandler.protos[proto]['id']))
+        sock.connect((args.host, int(args.port) + ATPHandler.protos[proto]['id']))
         file = sock.makefile(mode="rw")
         ATPHandler.files[proto] = file
         ATPHandler.channels[proto] = Channel(file.buffer, lambda: None, proto = proto, genAll = True)
 
-    Handler = ATPHandler
-
-    httpd = socketserver.TCPServer(("", int(sys.argv[1])), Handler)
-
-    print("serving at port", sys.argv[1])
+    httpd = socketserver.TCPServer(("", int(args.listen)), ATPHandler)
+    print("Server listening on port", args.listen)
     httpd.serve_forever()
