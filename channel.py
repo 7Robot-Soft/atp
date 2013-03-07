@@ -11,13 +11,19 @@ class Channel:
     def __init__(self, stream, callback, **kwargs):#proto = None, genAll = False):
 
         genAll = False
+        follow = False
         proto = None
 
         for arg in kwargs:
             if arg == "genAll":
-                genAll = kwargs[arg]
+                if kwargs[arg] != None:
+                    genAll = kwargs[arg]
+            elif arg == "follow":
+                if kwargs[arg] != None:
+                    follow = kwargs[arg]
             elif arg == "proto":
-                proto = kwargs[arg].capitalize()
+                if kwargs[arg] != None:
+                    proto = kwargs[arg].capitalize()
             else:
                 print("Warning: unexpeced '%s' argument" %arg, file=sys.stderr)
 
@@ -79,7 +85,7 @@ class Channel:
                     arguments['milli'] = args[-1]
                 callback(packet_name, arguments)
 
-        thread = decode(stream, recv)
+        thread = decode(stream, recv, follow)
 
     def _create_method(self, name, packet):
         def send(*args):
@@ -105,6 +111,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Decode ATP packets with semantical traduction.')
     parser.add_argument("-p", "--proto", dest='proto')
     parser.add_argument("-c", "--connect", dest='connect', help="connect to remote host (HOST:PORT)")
+    parser.add_argument('-f', '--follow', dest='follow', action='store_true', help='output appended data as the file grows')
     args = parser.parse_args()
 
     stream = sys.stdin.buffer
@@ -129,4 +136,4 @@ if __name__ == "__main__":
         file = sock.makefile(mode="rw")
         stream = file.buffer
 
-    channel = Channel(stream, print_packet, proto = args.proto, genAll = True)
+    channel = Channel(stream, print_packet, proto = args.proto, genAll = True, follow = args.follow)

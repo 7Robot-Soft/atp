@@ -1,6 +1,7 @@
 import binascii
 import struct
 import sys
+import time
 from threading import Thread
 
 formats = { 1 : '<B', 2 : '<H', 4 : '<I', 17 : '<b', 18 : '<h', 20 : '<i', 36 : '<f' }
@@ -40,7 +41,7 @@ def encode(stream, id, args):
     stream.flush()
 
 @async
-def decode(stream, callback):
+def decode(stream, callback, follow = False):
 
     data = b''
     expected = 'begin'
@@ -53,8 +54,12 @@ def decode(stream, callback):
     while True:
         c = stream.read(1)
         if not len(c):
-            callback(-1, [])
-            sys.exit()
+            if follow:
+                time.sleep(0.1)
+                continue
+            else:
+                callback(-1, [])
+                sys.exit()
         data += c
         while len(data) >= length:
             if expected == 'begin':
