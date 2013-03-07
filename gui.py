@@ -5,12 +5,22 @@ from PyQt4 import QtCore, QtGui
 from channel import Channel
 import protos
 import socket
+import argparse
 
 
 class AtpSender(QtGui.QTabWidget):
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         super(AtpSender, self).__init__()
+        self.port = 1300
+        self.host = 'localhost'
+        for arg in kwargs:
+            if arg == 'host':
+                self.host = kwargs[arg]
+            elif arg == 'port':
+                self.port = int(kwargs[arg])
+            else:
+                print("Warning: unexpected '%s' argument" %arg, file=sys.stderr)
         self.protos = protos.load()
         self.error = QtGui.QErrorMessage()
         self.initUI()
@@ -33,7 +43,7 @@ class AtpSender(QtGui.QTabWidget):
         layout = QtGui.QVBoxLayout()
         widget = QtGui.QWidget()
         sock = socket.socket()
-        sock.connect(("localhost", 1300 + proto["id"]))
+        sock.connect((self.host, self.port + proto["id"]))
         file = sock.makefile(mode="rw")
         chan = Channel(file.buffer, lambda: None, proto = name, genAll = True)
         chan._file_ = file # archi moche
@@ -73,8 +83,13 @@ class AtpSender(QtGui.QTabWidget):
 
 if __name__ == "__main__":
 
+    parser = argparse.ArgumentParser(description='GUI to send ATP packets.', add_help=False)
+    parser.add_argument('-h', '--host', dest='host', default='localhost', help='connect to remote host')
+    parser.add_argument('-p', '--port', dest='port', default='1300', help='port offset')
+    args = parser.parse_args()
+
     app = QtGui.QApplication(sys.argv)
 
-    sender = AtpSender()
+    sender = AtpSender(host = args.host, port = args.port)
 
     os._exit(app.exec_())
