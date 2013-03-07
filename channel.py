@@ -25,7 +25,7 @@ class Channel:
                 if kwargs[arg] != None:
                     proto = kwargs[arg].capitalize()
             else:
-                print("Warning: unexpeced '%s' argument" %arg, file=sys.stderr)
+                print("Warning: unexpected '%s' argument" %arg, file=sys.stderr)
 
         self._stream = stream
 
