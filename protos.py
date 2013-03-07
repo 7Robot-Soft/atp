@@ -3,6 +3,14 @@
 import inspect
 from collections import OrderedDict
 
+cformats = { 'B' : 'unsigned char',
+            'H' : 'unsigned int',
+            'I' : 'unsigned long int',
+            'b' : 'char',
+            'h' : 'int',
+            'i' : 'long int',
+            'f' : 'float' }
+
 class Proto:
     pass
 
@@ -64,24 +72,6 @@ def load_packet(packet, genAll = False):
 
     return p
 
-def prototype(type):
-    if type == 'B':
-        return 'unsigned char'
-    elif type == 'H':
-        return 'unsigned short'
-    elif type == 'I':
-        return 'unsigned int'
-    if type == 'b':
-        return 'char'
-    elif type == 'h':
-        return 'short'
-    elif type == 'i':
-        return 'int'
-    elif type == 'f':
-        return 'float'
-    else:
-        return 'unknow'
-
 if __name__ == "__main__":
     protos = load()
     for proto in protos:
@@ -91,4 +81,5 @@ if __name__ == "__main__":
             pa = p['packets'][packet]
             print("  [%3d, %4s] %s" %(pa['id'], pa['direction'], packet))
             for arg in pa['args']:
-                print("      %-10s \t(%s)" %(arg, prototype(pa['args'][arg])))
+                format = pa['args'][arg]
+                print("      %-10s \t(%s)" %(arg, cformats[format]))
