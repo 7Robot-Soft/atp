@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import inspect
 from collections import OrderedDict
 
@@ -61,3 +63,32 @@ def load_packet(packet, genAll = False):
         p['args'][arg] = type
 
     return p
+
+def prototype(type):
+    if type == 'B':
+        return 'unsigned char'
+    elif type == 'H':
+        return 'unsigned short'
+    elif type == 'I':
+        return 'unsigned int'
+    if type == 'b':
+        return 'char'
+    elif type == 'h':
+        return 'short'
+    elif type == 'i':
+        return 'int'
+    elif type == 'f':
+        return 'float'
+    else:
+        return 'unknow'
+
+if __name__ == "__main__":
+    protos = load()
+    for proto in protos:
+        p = protos[proto]
+        print("%s: (board %d)" %(proto, p['id']))
+        for packet in p['packets']:
+            pa = p['packets'][packet]
+            print("  [%3d, %4s] %s" %(pa['id'], pa['direction'], packet))
+            for arg in pa['args']:
+                print("      %-10s \t(%s)" %(arg, prototype(pa['args'][arg])))
