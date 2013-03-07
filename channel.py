@@ -8,7 +8,7 @@ import socket
 
 class Channel:
 
-    def __init__(self, stream, callback, **kwargs):#proto = None, genAll = False):
+    def __init__(self, stream, callback, **kwargs):
 
         genAll = False
         follow = False
