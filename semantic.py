@@ -32,6 +32,25 @@ class Common(Proto):
             ("id", "B")
         ])
 
+class Demo(Proto):
+    type = 1
+
+    blinkOn = Packet(1, "arm")
+    blinkOff = Packet(2, "arm")
+
+    setDelay = Packet(3, "arm", [
+            ("delay", "H")
+        ])
+
+    ledOn = Packet(4, "arm")
+    ledOff = Packet(5, "arm")
+
+    setCallback = Packet(6, "arm", [
+            ("nbloop", "B")
+        ])
+    callback = Packet(7, "pic")
+
+
 class Asserv(Proto):
     type = 5
 
