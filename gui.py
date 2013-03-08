@@ -2,7 +2,7 @@
 
 import sys, os
 from PyQt4 import QtCore, QtGui
-from channel import Channel
+from channel import Channel, print_packet
 import protos
 import socket
 import argparse
@@ -45,7 +45,7 @@ class AtpSender(QtGui.QTabWidget):
         sock = socket.socket()
         sock.connect((self.host, self.port + proto["id"]))
         file = sock.makefile(mode="rw")
-        chan = Channel(file.buffer, lambda: None, proto = name, genAll = True)
+        chan = Channel(file.buffer, print_packet, proto = name, genAll = True)
         chan._file_ = file # archi moche
         for packet in proto['packets']:
             layout.addWidget(self.createPacket(packet, proto['packets'][packet], chan), 0)
