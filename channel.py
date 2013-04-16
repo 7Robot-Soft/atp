@@ -31,9 +31,19 @@ class Channel:
 
         import protos
         self._protos = protos.load(genAll)
+        self._proto = None
 
         if proto:
-            self._proto = self._protos[proto]
+            try:
+                self._proto = self._protos[proto]
+            except KeyError:
+                pass
+
+            if not self._proto:
+                raise Exception("Unknow protocol '%s', " \
+                        "available protocols: %s" \
+                        %(proto, ','.join(self._protos.keys())))
+
             for packet_name in self._proto['packets']:
                 packet = self._proto['packets'][packet_name]
                 if packet['direction'] == "arm" or packet['direction'] == "both":
@@ -76,8 +86,8 @@ class Channel:
                     return
                 if len(packet['args']) != len(args) \
                         and len(packet['args']) + 2 != len(args):
-                    print("Warning: expected %d arguments, %d was given"
-                            %(len(packet['args']), len(args)), file=sys.stderr)
+                    print("Warning: packet with id %d expected %d arguments, %d was given"
+                            %(id, len(packet['args']), len(args)), file=sys.stderr)
                     return
                 arguments = dict(zip(packet['args'], args))
                 if len(args) == len(packet['args']) + 2:
