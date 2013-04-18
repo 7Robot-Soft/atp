@@ -11,8 +11,7 @@ from string import Template
 
 import protos
 from channel import Channel
-
-PORT = 8001
+from settings import HOST, PORT, HTTP_PORT
 
 
 template_page = """<!DOCTYPE html>
@@ -212,9 +211,9 @@ class ATPHandler(http.server.SimpleHTTPRequestHandler):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='GUI to send ATP packets.', add_help=False)
-    parser.add_argument('-h', '--host', dest='host', default='localhost', help='connect to remote host')
-    parser.add_argument('-p', '--port', dest='port', default='1300', help='port offset')
-    parser.add_argument('-l', '--listen', dest='listen', default='8000', help='server listen on specified port')
+    parser.add_argument('-h', '--host', dest='host', default=HOST, help='connect to remote host')
+    parser.add_argument('-p', '--port', dest='port', default=PORT, help='port offset')
+    parser.add_argument('-l', '--listen', dest='listen', default=HTTP_PORT, help='server listen on specified port')
     args = parser.parse_args()
 
     ATPHandler.channels = {}

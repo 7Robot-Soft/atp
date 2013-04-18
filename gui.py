@@ -6,13 +6,14 @@ from channel import Channel, print_packet
 import protos
 import socket
 import argparse
+from settings import PORT, HOST
 
 
 class AtpSender(QtGui.QTabWidget):
 
     def __init__(self, **kwargs):
         super(AtpSender, self).__init__()
-        self.port = 1300
+        self.port = PORT
         self.host = 'localhost'
         for arg in kwargs:
             if arg == 'host':
@@ -84,8 +85,8 @@ class AtpSender(QtGui.QTabWidget):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='GUI to send ATP packets.', add_help=False)
-    parser.add_argument('-h', '--host', dest='host', default='localhost', help='connect to remote host')
-    parser.add_argument('-p', '--port', dest='port', default='1300', help='port offset')
+    parser.add_argument('-h', '--host', dest='host', default=HOST, help='connect to remote host')
+    parser.add_argument('-p', '--port', dest='port', default=PORT, help='port offset')
     args = parser.parse_args()
 
     app = QtGui.QApplication(sys.argv)
