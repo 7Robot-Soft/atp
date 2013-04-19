@@ -122,6 +122,7 @@ if __name__ == "__main__":
     parser.add_argument("-p", "--proto", dest='proto')
     parser.add_argument("-c", "--connect", dest='connect', help="connect to remote host (HOST:PORT)")
     parser.add_argument('-f', '--follow', dest='follow', action='store_true', help='output appended data as the file grows')
+    parser.add_argument('-i', '--ipython', dest='ipython', action='store_true', help='launch ipython shell (need -c)')
     args = parser.parse_args()
 
     stream = sys.stdin.buffer
@@ -147,3 +148,7 @@ if __name__ == "__main__":
         stream = file.buffer
 
     channel = Channel(stream, print_packet, proto = args.proto, genAll = True, follow = args.follow)
+
+    if args.connect and args.ipython:
+        from IPython import embed
+        embed()
