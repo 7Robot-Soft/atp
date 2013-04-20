@@ -147,7 +147,12 @@ if __name__ == "__main__":
         file = sock.makefile(mode="rw")
         stream = file.buffer
 
-    channel = Channel(stream, print_packet, proto = args.proto, genAll = True, follow = args.follow)
+    if args.connect and args.ipython:
+        callback = lambda x, y: None
+    else:
+        callback = print_packet
+
+    channel = Channel(stream, callback, proto = args.proto, genAll = True, follow = args.follow)
 
     if args.connect and args.ipython:
         from IPython import embed
