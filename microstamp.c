@@ -50,6 +50,7 @@ void microstamp(FILE *in, FILE *out)
                     buffer[bufptr++] = (msec >> 24) & 0xFF;
                     buffer[bufptr] = 128;
                     fwrite(buffer, sizeof(char), bufptr+1, out);
+                    fflush(out);
                     bufptr = 0;
                     state = 1;
                 } else if (checktype(pending)) {
