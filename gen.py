@@ -5,6 +5,8 @@ from protos import load, cformats
 from semantic import version
 from string import Template
 from atp import formats
+from settings import DEST, PROTO
+import argparse
 
 template_c = """// Generated from version ${VERSION} of semantic
 
@@ -111,7 +113,7 @@ class PicGenerator:
             self.genProto(proto_name, proto)
 
     def genProto(self, proto_name, proto):
-        print("Generate files for '%s'..." %proto_name)
+        print("Generating files for '%s'..." %proto_name)
 
         cfile = open("%s/atp-%s.c" %(self.dest, proto_name.lower()), 'w')
         hfile = open("%s/atp-%s.h" %(self.dest, proto_name.lower()), 'w')
@@ -206,13 +208,29 @@ class PicGenerator:
 
 if __name__=="__main__":
 
-    if len(sys.argv) > 1:
-        dest = sys.argv[1]
-    else:
-        dest = "gen"
+    parser = argparse.ArgumentParser(description='Generate pic source code to encode and decode ATP paquet with semantic.')
+    parser.add_argument('-d', '--destination', dest='dest', help='Set destination directory.')
+    parser.add_argument('-p', '--proto', dest='proto', help='Generate source code for a specific protocol/pic.')
+    args = parser.parse_args()
 
-    print("Saving auto-generated files in '%s'" %dest)
+    if args.dest:
+        dest = args.dest
+    else:
+        dest = DEST
+
+    if args.proto:
+        proto = args.proto
+    else:
+        proto = PROTO
+
+    proto = proto.capitalize()
+
+    print("Generating files for %s protocol" %proto)
+    print("Saving files in '%s'\n" %dest)
 
     generator = PicGenerator(dest)
 
-    generator.genAll()
+    if proto == "All":
+        generator.genAll()
+    else:
+        generator.genProto(proto, generator.protos[proto])
