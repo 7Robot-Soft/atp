@@ -92,7 +92,7 @@ class Channel:
                 arguments = dict(zip(packet['args'], args))
                 if len(args) == len(packet['args']) + 2:
                     arguments['timestamp'] = args[-2]
-                    arguments['milli'] = args[-1]
+                    arguments['microseconds'] = args[-1]
                 callback(packet_name, arguments)
 
         thread = decode(stream, recv, follow)

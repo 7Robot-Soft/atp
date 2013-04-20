@@ -1,16 +1,16 @@
 #include <stdio.h>
 #include <sys/time.h>
 
-#include "millistamp.h"
+#include "microstamp.h"
 
 #define BUF_SIZE 1024
 
 int main(int argc, char *argv[])
 {
-    millistamp(stdin, stdout);
+    microstamp(stdin, stdout);
 }
 
-void millistamp(FILE *in, FILE *out)
+void microstamp(FILE *in, FILE *out)
 {
     char buffer[BUF_SIZE];
     int bufptr = 0;

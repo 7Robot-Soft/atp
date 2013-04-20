@@ -87,7 +87,7 @@ def decode(stream, callback, follow = False):
                     length = c & 0b1111
                     value = b''
                     expected = 'data'
-                elif c == 148: # millisecondes
+                elif c == 148: # microseconds
                     format = formats[4]
                     length = c & 0b1111
                     value = b''
