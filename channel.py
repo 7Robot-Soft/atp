@@ -5,10 +5,13 @@ from atp import encode, decode
 import argparse
 import sys
 import socket
+from logging import getLogger
 
 class Channel:
 
     def __init__(self, stream, callback, **kwargs):
+
+        self.logger = getLogger("comm.channel")
 
         genAll = False
         follow = False
@@ -25,7 +28,7 @@ class Channel:
                 if kwargs[arg] != None:
                     proto = kwargs[arg].capitalize()
             else:
-                print("Warning: unexpected '%s' argument" %arg, file=sys.stderr)
+                self.logger.warning("unexpected '%s' argument" %arg)
 
         self._stream = stream
 
@@ -58,19 +61,19 @@ class Channel:
             if self._proto == None:
                 if id == 255:
                     if len(args) != 1:
-                        print("Warning: invalid arguments count for id %d" %id, file=sys.stderr)
+                        self.logger.warning("invalid arguments count for id %d" %id)
                         return
                     board = args[0]
                     for proto_name in self._protos:
                         proto = self._protos[proto_name]
                         if proto["id"] == board:
                             self._proto = proto
-                            print("Loading proto '%s'" %proto_name)
+                            self.logger.info("Loading proto '%s'" %proto_name)
                             recv(id, args)
                     if self._proto == None:
-                        print("Warning: unknow board %d" %board, file=sys.stderr)
+                        self.logger.warning("unknow board %d" %board)
                 else:
-                    print("Warning: no protocol loaded, can't decode id %d" %id, file=sys.stderr)
+                    self.logger.warning("no protocol loaded, can't decode id %d" %id)
             else:
                 know_packet = False
                 for packet_name in self._proto['packets']:
@@ -79,15 +82,16 @@ class Channel:
                         know_packet = True
                         break
                 if not know_packet:
-                    print("Warning: unknow packet id %d" %id, file=sys.stderr)
+                    self.logger.warning("unknow packet id %d" %id)
                     return
                 if packet['direction'] != 'pic' and packet['direction'] != 'both':
-                    print("Warning: ignoring arm message", file=sys.stderr)
+                    self.logger.warning("ignoring arm message")
                     return
                 if len(packet['args']) != len(args) \
                         and len(packet['args']) + 2 != len(args):
-                    print("Warning: packet with id %d expected %d arguments, %d was given"
-                            %(id, len(packet['args']), len(args)), file=sys.stderr)
+                    self.logger.warning("packet with id %d expected " \
+                            "%d arguments, %d was given"
+                            %(id, len(packet['args']), len(args)))
                     return
                 arguments = dict(zip(packet['args'], args))
                 if len(args) == len(packet['args']) + 2:
@@ -102,7 +106,9 @@ class Channel:
             if len(args) == len(packet['args']):
                 self.send(name, packet, *args)
             else:
-                print("Warning: '%s' expects %d arguments, %d given, packet not sended !" %(name, len(packet['args']), len(args)), file=sys.stderr)
+                self.logger.warning("'%s' expects %d arguments, %d given" \
+                        ", packet not sended !"
+                        %(name, len(packet['args']), len(args)))
         return send
 
     def send(self, name, packet, *args):
