@@ -60,10 +60,17 @@ class Asserv(Proto):
     stop = Packet(11, "arm")
     done = Packet(12, "pic")
 
+    odoBroadcastOn = Packet(15, "arm")
+    odoBroadcastOff = Packet(16, "arm")
+    odoBroadcastSetDelay = Packet(17, "arm", [
+            ("delay", "H")
+        ])
+
     getPos = Packet(20, "arm")
     pos = Packet(21, "pic", [
             ("x", "f"),
-            ("y", "f")
+            ("y", "f"),
+            ("theta", "f")
         ])
 
     goTo = Packet(126, "arm", [

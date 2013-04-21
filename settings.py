@@ -2,7 +2,7 @@
 # Default parameters for connect to TCP Hub :
 
 # Default host
-HOST = "ash"
+HOST = "localhost"
 # Base port (port are computed by base port + board id)
 PORT = 1300
 
