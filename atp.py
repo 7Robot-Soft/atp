@@ -3,6 +3,7 @@ import struct
 import sys
 import time
 from threading import Thread
+from logging import getLogger
 
 formats = { 1 : '<B', 2 : '<H', 4 : '<I', 17 : '<b', 18 : '<h', 20 : '<i', 36 : '<f' }
 
@@ -16,6 +17,7 @@ def async(fcnt):
     return run
 
 def encode(stream, id, args):
+    logger = getLogger("atp.encode")
     buffer = bytearray()
     buffer += struct.pack('B', 129)
     buffer += struct.pack('B', int(id))
@@ -26,8 +28,7 @@ def encode(stream, id, args):
                 code = c
                 break
         if code == None:
-            print("[atp.encode] unknow type, assuming unsigned char",
-                    file=sys.stderr)
+            logger.warning("unknow type (%c), assuming unsigned char" %type)
             buffer += struct.pack('B', 128)
             return
         if type == 'f':
@@ -43,6 +44,7 @@ def encode(stream, id, args):
 @async
 def decode(stream, callback, follow = False):
 
+    logger = getLogger("atp.decode")
     data = b''
     expected = 'begin'
     length = 1
@@ -68,7 +70,7 @@ def decode(stream, callback, follow = False):
                 if c == 129: # Début de trame
                     expected = 'id'
                 else:
-                    print('[atp.decode] expected beginning flag (%d)' %c, file=sys.stderr)
+                    logger.warning('expected beginning flag (%d)' %c)
                     errors += 1
             elif expected == 'id':
                 c = data[0]
@@ -96,8 +98,7 @@ def decode(stream, callback, follow = False):
                     try:
                         format = formats[c]
                     except KeyError:
-                        print('[atp.decode] unknow format (%d), waiting next flag'
-                                %c, file=sys.stderr)
+                        logger.warning('unknow format (%d), waiting next flag' %c)
                         errors += 1
                         expected = 'begin'
                     length = c & 0b1111
@@ -107,7 +108,7 @@ def decode(stream, callback, follow = False):
                 try:
                     value = struct.unpack(format, data[0:length])
                 except struct.error:
-                    print("[atp.decode] struct.unpack exception, ignoring argument %s of format %s" % (binascii.hexlify(data[0:length]), format), file=sys.stderr)
+                    logger.warning("struct.unpack exception, ignoring argument %s of format %s" % (binascii.hexlify(data[0:length]), format))
                 else:
                     args.append(value[0])
                 finally:
