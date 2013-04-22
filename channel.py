@@ -73,7 +73,7 @@ class Channel:
                     if self._proto == None:
                         self.logger.warning("unknow board %d" %board)
                 else:
-                    self.logger.warning("no protocol loaded, can't decode id %d" %id)
+                    self.logger.info("no protocol loaded, can't decode id %d" %id)
             else:
                 know_packet = False
                 for packet_name in self._proto['packets']:
@@ -85,7 +85,7 @@ class Channel:
                     self.logger.warning("unknow packet id %d" %id)
                     return
                 if packet['transmitter'] == transmitter and packet['transmitter'] != 'both' and transmitter != 'both':
-                    self.logger.warning("ignoring %s message" %packet['transmitter'])
+                    self.logger.info("ignoring %s message" %packet['transmitter'])
                     return
                 if len(packet['args']) != len(args) \
                         and len(packet['args']) + 2 != len(args):
