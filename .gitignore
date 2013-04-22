@@ -1,8 +1,5 @@
 build
 gen
-__pycache__
-*.pyc
+*.py[co]
 *.swp
-atp-template.X/build
-atp-template.X/nbproject/private
-atp-template.X/dist
+logs
