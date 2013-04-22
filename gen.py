@@ -141,12 +141,12 @@ class PicGenerator:
         c = ''
         h = ''
         d = ''
-        if packet['direction'] == 'arm' or packet['direction'] == 'both':
+        if packet['transmitter'] == 'arm' or packet['transmitter'] == 'both':
             _c, _h, _d = self.genDecoder(packet_name, packet)
             c += _c
             h += _h
             d += _d
-        if packet['direction'] == 'pic' or packet['direction'] == 'both':
+        if packet['transmitter'] == 'pic' or packet['transmitter'] == 'both':
             _c, _h = self.genEncoder(packet_name, packet)
             c += _c
             h += _h

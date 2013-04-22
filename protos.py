@@ -15,18 +15,18 @@ class Proto:
     pass
 
 class Packet:
-    def __init__(self, id, direction = "both", attrs = []):
+    def __init__(self, id, transmitter = "both", attrs = []):
         self.id = id
-        if direction not in [ "pic", "arm", "both" ]:
-            print("Warning: direction must be 'pic', 'arm' or 'both'. "
+        if transmitter not in [ "pic", "arm", "both" ]:
+            print("Warning: transmitter must be 'pic', 'arm' or 'both'. "
                 "Assume 'both'.", file=sys.stderr)
-            self.direction = "both"
+            self.transmitter = "both"
         else:
-            self.direction = direction
+            self.transmitter = transmitter
         self.attrs = attrs
 
 
-def load(genAll = False):
+def load():
 
     import semantic
 
@@ -35,11 +35,11 @@ def load(genAll = False):
     for name, proto in inspect.getmembers(semantic,
             lambda x: inspect.isclass(x) and issubclass(x, semantic.Proto)):
         if name != "Proto" and name != "Common":
-            protos[name] = load_proto(proto, genAll)
+            protos[name] = load_proto(proto)
 
     return protos
 
-def load_proto(proto, genAll = False):
+def load_proto(proto):
 
     import semantic
 
@@ -50,22 +50,19 @@ def load_proto(proto, genAll = False):
 
     for name, packet in inspect.getmembers(semantic.Common,
             lambda x: isinstance(x, semantic.Packet)):
-        p['packets'][name] = load_packet(packet, genAll)
+        p['packets'][name] = load_packet(packet)
 
     for name, packet in inspect.getmembers(proto,
             lambda x: isinstance(x, semantic.Packet)):
-        p['packets'][name] = load_packet(packet, genAll)
+        p['packets'][name] = load_packet(packet)
 
     return p
 
-def load_packet(packet, genAll = False):
+def load_packet(packet):
     p = OrderedDict()
 
     p['id'] = packet.id
-    if genAll:
-        p['direction'] = 'both'
-    else:
-        p['direction'] = packet.direction
+    p['transmitter'] = packet.transmitter
     p['args'] = OrderedDict()
     for arg, type in packet.attrs:
         p['args'][arg] = type
@@ -79,7 +76,7 @@ if __name__ == "__main__":
         print("%s: (board %d)" %(proto, p['id']))
         for packet in p['packets']:
             pa = p['packets'][packet]
-            print("  [%3d, %4s] %s" %(pa['id'], pa['direction'], packet))
+            print("  [%3d, %4s] %s" %(pa['id'], pa['transmitter'], packet))
             for arg in pa['args']:
                 format = pa['args'][arg]
                 print("      %-10s \t(%s)" %(arg, cformats[format]))

@@ -223,7 +223,7 @@ if __name__ == "__main__":
         sock.connect((args.host, int(args.port) + ATPHandler.protos[proto]['id']))
         file = sock.makefile(mode="rw")
         ATPHandler.files[proto] = file
-        ATPHandler.channels[proto] = Channel(file.buffer, lambda: None, proto = proto, genAll = True)
+        ATPHandler.channels[proto] = Channel(file.buffer, lambda: None, proto = proto, transmitter = 'both')
 
     httpd = socketserver.TCPServer(("", int(args.listen)), ATPHandler)
     print("Server listening on port", args.listen)

@@ -13,14 +13,14 @@ class Channel:
 
         self.logger = getLogger("comm.channel")
 
-        genAll = False
+        transmitter = "arm"
         follow = False
         proto = None
 
         for arg in kwargs:
-            if arg == "genAll":
+            if arg == "transmitter":
                 if kwargs[arg] != None:
-                    genAll = kwargs[arg]
+                    transmitter = kwargs[arg]
             elif arg == "follow":
                 if kwargs[arg] != None:
                     follow = kwargs[arg]
@@ -33,7 +33,7 @@ class Channel:
         self._stream = stream
 
         import protos
-        self._protos = protos.load(genAll)
+        self._protos = protos.load()
         self._proto = None
 
         if proto:
@@ -49,7 +49,7 @@ class Channel:
 
             for packet_name in self._proto['packets']:
                 packet = self._proto['packets'][packet_name]
-                if packet['direction'] == "arm" or packet['direction'] == "both":
+                if packet['transmitter'] == transmitter or packet['transmitter'] == 'both' or transmitter == 'both':
                     self.__setattr__(packet_name, self._create_method(packet_name, packet))
         else:
             self._proto = None
@@ -84,8 +84,8 @@ class Channel:
                 if not know_packet:
                     self.logger.warning("unknow packet id %d" %id)
                     return
-                if packet['direction'] != 'pic' and packet['direction'] != 'both':
-                    self.logger.warning("ignoring arm message")
+                if packet['transmitter'] == transmitter and packet['transmitter'] != 'both' and transmitter != 'both':
+                    self.logger.warning("ignoring %s message" %packet['transmitter'])
                     return
                 if len(packet['args']) != len(args) \
                         and len(packet['args']) + 2 != len(args):
@@ -158,7 +158,7 @@ if __name__ == "__main__":
     else:
         callback = print_packet
 
-    channel = Channel(stream, callback, proto = args.proto, genAll = True, follow = args.follow)
+    channel = Channel(stream, callback, proto = args.proto, transmitter = 'both', follow = args.follow)
 
     if args.connect and args.ipython:
         from IPython import embed

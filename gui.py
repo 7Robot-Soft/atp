@@ -46,7 +46,7 @@ class AtpSender(QtGui.QTabWidget):
         sock = socket.socket()
         sock.connect((self.host, self.port + proto["id"]))
         file = sock.makefile(mode="rw")
-        chan = Channel(file.buffer, print_packet, proto = name, genAll = True)
+        chan = Channel(file.buffer, print_packet, proto = name)
         chan._file_ = file # archi moche
         for packet in proto['packets']:
             layout.addWidget(self.createPacket(packet, proto['packets'][packet], chan), 0)
