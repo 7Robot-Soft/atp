@@ -87,7 +87,7 @@ class Sensor(Proto):
         ])
     value = Packet(2, "pic", [
             ("id", "B"),
-            ("value", "f")
+            ("value", "B")
         ])
     setThreshold = Packet(3, "arm", [
             ("id", "B"),
