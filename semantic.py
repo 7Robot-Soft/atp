@@ -80,8 +80,8 @@ class Asserv(Proto):
         ])
 
     setSpeed = Packet(127, "arm", [
-            ("v", "B"),
-            ("omega", "B")
+            ("v", "b"),
+            ("omega", "b")
         ])
 
 class Sensor(Proto):
