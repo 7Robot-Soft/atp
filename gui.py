@@ -14,7 +14,7 @@ class AtpSender(QtGui.QTabWidget):
     def __init__(self, **kwargs):
         super(AtpSender, self).__init__()
         self.port = PORT
-        self.host = 'localhost'
+        self.host = HOST
         for arg in kwargs:
             if arg == 'host':
                 self.host = kwargs[arg]
