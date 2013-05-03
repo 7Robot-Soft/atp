@@ -4,7 +4,7 @@ import sys, os
 from protos import load, cformats
 from semantic import version
 from string import Template
-from atp import formats
+from atp import FORMATS as formats
 from settings import DEST, PROTO
 import argparse
 
