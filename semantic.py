@@ -1,16 +1,16 @@
 # Rappel des types struct.pack usuelles :
 # B  unsigned char
 # H  unsigned short
-# I  unsigned int 
+# I  unsigned int
 # b  signed char
 # h  signed short
-# i  signed int 
+# i  signed int
 # f  float
 
 from protos import Packet, Proto
 
 # yymmjjhhmm
-version = 1303020239
+version = 1305061627
 
 class Common(Proto):
     def __init__(self):
@@ -54,40 +54,70 @@ class Demo(Proto):
 class Asserv(Proto):
     type = 5
 
-    dist = Packet(10, "arm", [
-            ("dist", "I")
-        ])
-    stop = Packet(11, "arm")
-    done = Packet(12, "pic")
+    stop = Packet(1, "arm")
+    done = Packet(2, "pic")
 
-    odoBroadcastOn = Packet(15, "arm")
-    odoBroadcastOff = Packet(16, "arm")
-    odoBroadcastSetDelay = Packet(17, "arm", [
+    odoBroadcastOn = Packet(10, "arm")
+    odoBroadcastOff = Packet(11, "arm")
+    odoBroadcastSetDelay = Packet(12, "arm", [
             ("delay", "H")
         ])
 
-    setPos = Packet(19, "arm", [
-            ("x", "f"),
-            ("y", "f"),
-            ("theta", "f")
-        ])
-    getPos = Packet(20, "arm")
-    pos = Packet(21, "pic", [
-            ("x", "f"),
-            ("y", "f"),
-            ("theta", "f")
+    # Distance
+    setDist = Packet(20, "arm", [
+            ("dist", "f")
         ])
 
-    goTo = Packet(126, "arm", [
+    # Position
+    setPos = Packet(30, "arm", [
             ("x", "f"),
             ("y", "f"),
-            ("theta", "f")
+        ])
+    getPos = Packet(31, "arm")
+    pos = Packet(32, "pic", [
+            ("x", "f"),
+            ("y", "f"),
+            ("theta", "f"),
         ])
 
-    setSpeed = Packet(127, "arm", [
-            ("v", "b"),
-            ("omega", "b")
+    # Angle
+    setAngle = Packet(40, "arm", [
+            ("theta", "f"),
         ])
+    getAngle = Packet(41, "arm")
+    angle = Packet(42, "pic", [
+            ("theta", "f"),
+        ])
+
+    # Vitesse linéaire
+    setVit = Packet(50, "arm", [
+            ("v", "f"),
+        ])
+    getVit = Packet(51, "arm")
+    vit = Packet(52, "pic", [
+            ("v", "f"),
+        ])
+
+    # Vitesse de rotation
+    setOmega = Packet(60, "arm", [
+            ("omega", "f"),
+        ])
+    getOmega = Packet(61, "arm")
+    omega = Packet(62, "pic", [
+            ("omega", "f"),
+        ])
+
+    # Vitesses
+    setCourbe = Packet(70, "arm", [
+            ("v", "f"),
+            ("omega", "f"),
+        ])
+    getCourbe = Packet(71, "arm")
+    courbe = Packet(72, "pic", [
+            ("v", "f"),
+            ("omega", "f"),
+        ])
+
 
 class Sensor(Proto):
     type = 2
@@ -115,44 +145,44 @@ class Ax(Proto):
             ("value", "f")
         ])
 
-    BougiesHitTop = Packet(3, "arm", [            
+    BougiesHitTop = Packet(3, "arm", [
         ])
-    BougiesHitTopConfirm = Packet(4, "pic", [            
-        ])
-
-    BougiesHitBot = Packet(5, "arm", [            
-        ])
-    BougiesHitBotConfirm = Packet(6, "pic", [            
+    BougiesHitTopConfirm = Packet(4, "pic", [
         ])
 
-    BougiesOff = Packet(7, "arm", [            
+    BougiesHitBot = Packet(5, "arm", [
         ])
-    BougiesOffConfirm = Packet(8, "pic", [            
-        ])
-
-    BougiesOn = Packet(9, "arm", [            
-        ])
-    BougiesOnConfirm = Packet(10, "pic", [            
+    BougiesHitBotConfirm = Packet(6, "pic", [
         ])
 
-    VerresEnd = Packet(11, "arm", [            
+    BougiesOff = Packet(7, "arm", [
         ])
-    VerresEndConfirm = Packet(12, "pic", [            
-        ])
-
-    VerresCatch = Packet(13, "arm", [            
-        ])
-    VerresCatchConfirm = Packet(14, "pic", [            
+    BougiesOffConfirm = Packet(8, "pic", [
         ])
 
-    VerresOff = Packet(15, "arm", [            
+    BougiesOn = Packet(9, "arm", [
         ])
-    VerresOffConfirm = Packet(16, "pic", [            
+    BougiesOnConfirm = Packet(10, "pic", [
         ])
 
-    VerresOn = Packet(17, "arm", [            
+    VerresEnd = Packet(11, "arm", [
         ])
-    VerresOnConfirm = Packet(18, "pic", [            
+    VerresEndConfirm = Packet(12, "pic", [
+        ])
+
+    VerresCatch = Packet(13, "arm", [
+        ])
+    VerresCatchConfirm = Packet(14, "pic", [
+        ])
+
+    VerresOff = Packet(15, "arm", [
+        ])
+    VerresOffConfirm = Packet(16, "pic", [
+        ])
+
+    VerresOn = Packet(17, "arm", [
+        ])
+    VerresOnConfirm = Packet(18, "pic", [
         ])
 
 class Funny(Proto):
@@ -168,11 +198,19 @@ class Funny(Proto):
             ("threshold", "f")
         ])
 
+class Buttons(Proto):
+    type = 7
+    ButtonAction = Packet(1, "pic", [
+        ("id", "B"),
+        ("state", "B") # open/close
+    ])
+
+
 # Rappel des types struct.pack usuelles :
 # B  unsigned char
 # H  unsigned short
-# I  unsigned int 
+# I  unsigned int
 # b  signed char
 # h  signed short
-# i  signed int 
+# i  signed int
 # f  float
