@@ -60,7 +60,7 @@ class AtpSender(QtGui.QTabWidget):
         layout = QtGui.QGridLayout()
         texts = []
         row = 0
-        eventHandler = lambda: self.send(packet, texts, chan)
+        eventHandler = lambda: self.send(name, packet, texts, chan)
         for arg in packet['args']:
             label = QtGui.QLabel(arg)
             text = QtGui.QLineEdit()
@@ -75,10 +75,10 @@ class AtpSender(QtGui.QTabWidget):
         group.setLayout(layout)
         return group
 
-    def send(self, packet, texts, chan):
+    def send(self, name, packet, texts, chan):
         args = list(map(lambda x: x[1].text(), texts))
         try:
-            chan.send(None, packet, *args)
+            chan.send(name, packet, *args)
         except Exception as e:
             self.error.showMessage(str(e))
 
