@@ -168,6 +168,14 @@ class Funny(Proto):
             ("threshold", "f")
         ])
 
+class Buttons(Proto):
+    type = 7
+    ButtonAction = Packet(1, "pic", [
+	("id", "B"),
+	("state", "B") # open/close
+    ])
+
+
 # Rappel des types struct.pack usuelles :
 # B  unsigned char
 # H  unsigned short
