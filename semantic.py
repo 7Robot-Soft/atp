@@ -63,51 +63,57 @@ class Asserv(Proto):
             ("delay", "H")
         ])
 
+    # Distance
     setDist = Packet(20, "arm", [
             ("dist", "f")
         ])
 
-    setPos = Packet(21, "arm", [
+    # Position
+    setPos = Packet(30, "arm", [
             ("x", "f"),
             ("y", "f"),
         ])
-    getPos = Packet(22, "arm")
-    pos = Packet(21, "pic", [
+    getPos = Packet(31, "arm")
+    pos = Packet(32, "pic", [
             ("x", "f"),
             ("y", "f"),
             ("theta", "f"),
         ])
 
-    setAngle = Packet(23, "arm", [
+    # Angle
+    setAngle = Packet(40, "arm", [
             ("theta", "f"),
         ])
-    getAngle = Packet(24, "arm")
-    angle = Packet(25, "pic", [
+    getAngle = Packet(41, "arm")
+    angle = Packet(42, "pic", [
             ("theta", "f"),
         ])
 
-    setVit = Packet(25, "arm", [
+    # Vitesse linéaire
+    setVit = Packet(50, "arm", [
             ("v", "f"),
         ])
-    getVit = Packet(26, "arm")
-    vit = Packet(27, "pic", [
+    getVit = Packet(51, "arm")
+    vit = Packet(52, "pic", [
             ("v", "f"),
         ])
 
-    setOmega = Packet(27, "arm", [
+    # Vitesse de rotation
+    setOmega = Packet(60, "arm", [
             ("omega", "f"),
         ])
-    getOmega = Packet(28, "arm")
-    omega = Packet(29, "pic", [
+    getOmega = Packet(61, "arm")
+    omega = Packet(62, "pic", [
             ("omega", "f"),
         ])
 
-    setCourbe = Packet(30, "arm", [
+    # Vitesses
+    setCourbe = Packet(70, "arm", [
             ("v", "f"),
             ("omega", "f"),
         ])
-    getCourbe = Packet(31, "arm")
-    courbe = Packet(32, "pic", [
+    getCourbe = Packet(71, "arm")
+    courbe = Packet(72, "pic", [
             ("v", "f"),
             ("omega", "f"),
         ])
