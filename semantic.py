@@ -10,7 +10,7 @@
 from protos import Packet, Proto
 
 # yymmjjhhmm
-version = 1305062032
+version = 1305062057
 
 class Common(Proto):
     def __init__(self):
@@ -168,6 +168,19 @@ class Asserv(Proto):
             ("KPt", "f"),
             ("KIt", "f"),
             ("KDt", "f"),
+        ])
+
+
+class Mother(Proto):
+    type = 6
+
+    # Pince pour les verres
+    sortirPince = Packet(1, "arm")
+    chopperVerre = Packet(2, "arm")
+    lacherVerres = Packet(3, "arm")
+    getNombreVerres = Packet(4, "arm")
+    nombreVerres = Packet(5, "pic", [
+            ("n", "H"),
         ])
 
 
