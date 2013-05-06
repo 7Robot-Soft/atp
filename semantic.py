@@ -75,6 +75,7 @@ class Asserv(Proto):
     pos = Packet(21, "pic", [
             ("x", "f"),
             ("y", "f"),
+            ("theta", "f"),
         ])
 
     setAngle = Packet(23, "arm", [
