@@ -15,11 +15,14 @@ class AtpSender(QtGui.QTabWidget):
         super(AtpSender, self).__init__()
         self.port = PORT
         self.host = HOST
+        self.symmetrical = False
         for arg in kwargs:
             if arg == 'host':
                 self.host = kwargs[arg]
             elif arg == 'port':
                 self.port = int(kwargs[arg])
+            elif arg == 'symmetrical':
+                self.symmetrical = kwargs[arg]
             else:
                 print("Warning: unexpected '%s' argument" %arg, file=sys.stderr)
         self.protos = protos.load()
@@ -46,7 +49,8 @@ class AtpSender(QtGui.QTabWidget):
         sock = socket.socket()
         sock.connect((self.host, self.port + proto["id"]))
         file = sock.makefile(mode="rw")
-        chan = Channel(file.buffer, print_packet, proto = name)
+        chan = Channel(file.buffer, print_packet, proto = name,
+                symmetrical = self.symmetrical)
         chan._file_ = file # archi moche
         for packet in proto['packets']:
             layout.addWidget(self.createPacket(packet, proto['packets'][packet], chan), 0)
@@ -87,10 +91,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='GUI to send ATP packets.', add_help=False)
     parser.add_argument('-h', '--host', dest='host', default=HOST, help='connect to remote host')
     parser.add_argument('-p', '--port', dest='port', default=PORT, help='port offset')
+    parser.add_argument('-s', '--symmetrical', action='store_true', dest='symmetrical', help='symmetrical packets')
     args = parser.parse_args()
 
     app = QtGui.QApplication(sys.argv)
 
-    sender = AtpSender(host = args.host, port = args.port)
+    sender = AtpSender(host = args.host, port = args.port,
+            symmetrical = args.symmetrical)
 
     os._exit(app.exec_())
