@@ -10,7 +10,7 @@
 from protos import Packet, Proto
 
 # yymmjjhhmm
-version = 1305062028
+version = 1305062032
 
 class Common(Proto):
     def __init__(self):
@@ -121,53 +121,53 @@ class Asserv(Proto):
     # Coefs asserv vitesse linéaire
     setAsservV = Packet(100, "arm", [
             ("KPv", "f"),
+            ("KIv", "f"),
             ("KDv", "f"),
-            ("KPv", "f"),
         ])
     getAsservV = Packet(101, "arm")
     asservV = Packet(102, "pic", [
             ("KPv", "f"),
+            ("KIv", "f"),
             ("KDv", "f"),
-            ("KPv", "f"),
         ])
 
     # Coefs asserv vitesse angulaire
     setAsservO = Packet(110, "arm", [
             ("KPo", "f"),
+            ("KIo", "f"),
             ("KDo", "f"),
-            ("KPo", "f"),
         ])
     getAsservO = Packet(111, "arm")
     asservO = Packet(112, "pic", [
             ("KPo", "f"),
+            ("KIo", "f"),
             ("KDo", "f"),
-            ("KPo", "f"),
         ])
 
     # Coefs asserv position linéaire
     setAsservD = Packet(120, "arm", [
             ("KPd", "f"),
+            ("KId", "f"),
             ("KDd", "f"),
-            ("KPd", "f"),
         ])
     getAsservD = Packet(121, "arm")
     asservD = Packet(122, "pic", [
             ("KPd", "f"),
+            ("KId", "f"),
             ("KDd", "f"),
-            ("KPd", "f"),
         ])
 
     # Coefs asserv position angulaire
     setAsservT = Packet(130, "arm", [
             ("KPt", "f"),
+            ("KIt", "f"),
             ("KDt", "f"),
-            ("KPt", "f"),
         ])
     getAsservT = Packet(131, "arm")
     asservT = Packet(132, "pic", [
             ("KPt", "f"),
+            ("KIt", "f"),
             ("KDt", "f"),
-            ("KPt", "f"),
         ])
 
 
