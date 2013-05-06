@@ -6,16 +6,18 @@ import argparse
 import sys
 import socket
 from logging import getLogger
+from symmetrical import symmetrical
 
 class Channel:
 
     def __init__(self, stream, callback, **kwargs):
 
-        self.logger = getLogger("comm.channel")
+        self._logger = getLogger("comm.channel")
 
         transmitter = "arm"
         follow = False
         proto = None
+        self._symmetrical = False
 
         for arg in kwargs:
             if arg == "transmitter":
@@ -27,14 +29,18 @@ class Channel:
             elif arg == "proto":
                 if kwargs[arg] != None:
                     proto = kwargs[arg].capitalize()
+            elif arg == "symmetrical":
+                if kwargs[arg] != None:
+                    self._symmetrical = kwargs[arg]
             else:
-                self.logger.warning("unexpected '%s' argument" %arg)
+                self._logger.warning("unexpected '%s' argument" %arg)
 
         self._stream = stream
 
         import protos
         self._protos = protos.load()
         self._proto = None
+        self._proto_name = None
 
         if proto:
             try:
@@ -51,8 +57,7 @@ class Channel:
                 packet = self._proto['packets'][packet_name]
                 if packet['transmitter'] == transmitter or packet['transmitter'] == 'both' or transmitter == 'both':
                     self.__setattr__(packet_name, self._create_method(packet_name, packet))
-        else:
-            self._proto = None
+            self._proto_name = proto.lower()
 
         def recv(id, args):
             if id == -1:
@@ -61,19 +66,20 @@ class Channel:
             if self._proto == None:
                 if id == 255:
                     if len(args) != 1:
-                        self.logger.warning("invalid arguments count for id %d" %id)
+                        self._logger.warning("invalid arguments count for id %d" %id)
                         return
                     board = args[0]
                     for proto_name in self._protos:
                         proto = self._protos[proto_name]
                         if proto["id"] == board:
                             self._proto = proto
+                            self._proto_name = proto_name.lower()
                             self.logger.info("Loading proto '%s'" %proto_name)
                             recv(id, args)
                     if self._proto == None:
-                        self.logger.warning("unknow board %d" %board)
+                        self._logger.warning("unknow board %d" %board)
                 else:
-                    self.logger.info("no protocol loaded, can't decode id %d" %id)
+                    self._logger.info("no protocol loaded, can't decode id %d" %id)
             else:
                 know_packet = False
                 for packet_name in self._proto['packets']:
@@ -82,14 +88,14 @@ class Channel:
                         know_packet = True
                         break
                 if not know_packet:
-                    self.logger.warning("unknow packet id %d" %id)
+                    self._logger.warning("unknow packet id %d" %id)
                     return
                 if packet['transmitter'] == transmitter and packet['transmitter'] != 'both' and transmitter != 'both':
-                    self.logger.info("ignoring %s message" %packet['transmitter'])
+                    self._logger.info("ignoring %s message" %packet['transmitter'])
                     return
                 if len(packet['args']) != len(args) \
                         and len(packet['args']) + 2 != len(args):
-                    self.logger.warning("packet with id %d expected " \
+                    self._logger.warning("packet with id %d expected " \
                             "%d arguments, %d was given"
                             %(id, len(packet['args']), len(args)))
                     return
@@ -97,6 +103,8 @@ class Channel:
                 if len(args) == len(packet['args']) + 2:
                     arguments['timestamp'] = args[-2]
                     arguments['microseconds'] = args[-1]
+                if self._symmetrical:
+                    symmetrical(self._proto_name, packet_name, arguments)
                 callback(packet_name, arguments)
 
         thread = decode(stream, recv, follow)
@@ -106,12 +114,19 @@ class Channel:
             if len(args) == len(packet['args']):
                 self.send(name, packet, *args)
             else:
-                self.logger.warning("'%s' expects %d arguments, %d given" \
+                self._logger.warning("'%s' expects %d arguments, %d given" \
                         ", packet not sended !"
                         %(name, len(packet['args']), len(args)))
         return send
 
     def send(self, name, packet, *args):
+        if self._symmetrical:
+            namedArgs = dict()
+            names = list(packet['args'])
+            for i in range(len(args)):
+                namedArgs[names[i]] = args[i]
+            symmetrical(self._proto_name, name, namedArgs)
+            args = list(map(lambda x: namedArgs[x], namedArgs))
         formats = list(map(lambda x: packet['args'][x], list(packet['args'])))
         encode(self._stream, packet['id'], list(zip(args, formats)))
 
@@ -129,6 +144,7 @@ if __name__ == "__main__":
     parser.add_argument("-c", "--connect", dest='connect', help="connect to remote host (HOST:PORT)")
     parser.add_argument('-f', '--follow', dest='follow', action='store_true', help='output appended data as the file grows')
     parser.add_argument('-i', '--ipython', dest='ipython', action='store_true', help='launch ipython shell (need -c)')
+    parser.add_argument('-s', '--symmetrical', dest='symmetrical', action='store_true', help='symmetrical packets')
     args = parser.parse_args()
 
     stream = sys.stdin.buffer
@@ -158,7 +174,8 @@ if __name__ == "__main__":
     else:
         callback = print_packet
 
-    channel = Channel(stream, callback, proto = args.proto, transmitter = 'both', follow = args.follow)
+    channel = Channel(stream, callback, proto = args.proto, transmitter = 'both',
+        follow = args.follow, symmetrical = args.symmetrical)
 
     if args.connect and args.ipython:
         from IPython import embed
