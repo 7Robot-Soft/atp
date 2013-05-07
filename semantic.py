@@ -175,7 +175,7 @@ class Asserv(Proto):
     getBackBumperState = Packet(140, "arm")
     backBumperState = Packet(141, "pic", [
             ("state", "B"),
-        )]
+        ])
 
     # SICKs
     getSICKValue = Packet(150, "arm", [
@@ -220,27 +220,27 @@ class Mother(Proto):
     getEmergencyState = Packet(20, "arm")
     emergencyState = Packet(21, "pic", [
             ("emergency_state", "B"),
-        )]
+        ])
 
     # Trois switchs
-    getSwitchOneState = Packet(30, "pic", [
+    getSwitchOneState = Packet(30, "pic")
     switchOne = Packet(31, "pic", [
             ("state", "B"),
-        )]
-    getSwitchTwoState = Packet(32, "pic", [
+        ])
+    getSwitchTwoState = Packet(32, "pic")
     switchTwo  = Packet(33, "pic", [
             ("state", "B"),
-        )]
-    getSwitchThreeState = Packet(34, "pic", [
+        ])
+    getSwitchThreeState = Packet(34, "pic")
     switchThree  = Packet(35, "pic", [
             ("state", "B"),
-        )]
+        ])
 
     # Start Laisse
     getStartLaisseState = Packet(40, "arm")
     StartLaisseState = Packet(41, "pic", [
             ("state", "B"),
-        )]
+        ])
 
 
 class Funny(Proto):
