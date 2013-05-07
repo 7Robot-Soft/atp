@@ -10,7 +10,7 @@
 from protos import Packet, Proto
 
 # yymmjjhhmm
-version = 1305062057
+version = 1305070300
 
 class Common(Proto):
     def __init__(self):
@@ -183,6 +183,19 @@ class Mother(Proto):
             ("n", "H"),
         ])
 
+    # Bras pour les bougies
+    BougiesHitTop = Packet(10, "arm")
+    BougiesHitTopConfirm = Packet(11, "pic")
+
+    BougiesHitBot = Packet(12, "arm")
+    BougiesHitBotConfirm = Packet(13, "pic")
+
+    BougiesOff = Packet(14, "arm")
+    BougiesOffConfirm = Packet(15, "pic")
+
+    BougiesOn = Packet(16, "arm")
+    BougiesOnConfirm = Packet(17, "pic")
+
 
 class Sensor(Proto):
     type = 2
@@ -199,56 +212,6 @@ class Sensor(Proto):
             ("threshold", "f")
         ])
 
-class Ax(Proto):
-    type = 3
-
-    GetPos = Packet(1, "arm", [
-            ("idpic", "B")
-        ])
-    Pos = Packet(2, "pic", [
-            ("id", "B"),
-            ("value", "f")
-        ])
-
-    BougiesHitTop = Packet(3, "arm", [
-        ])
-    BougiesHitTopConfirm = Packet(4, "pic", [
-        ])
-
-    BougiesHitBot = Packet(5, "arm", [
-        ])
-    BougiesHitBotConfirm = Packet(6, "pic", [
-        ])
-
-    BougiesOff = Packet(7, "arm", [
-        ])
-    BougiesOffConfirm = Packet(8, "pic", [
-        ])
-
-    BougiesOn = Packet(9, "arm", [
-        ])
-    BougiesOnConfirm = Packet(10, "pic", [
-        ])
-
-    VerresEnd = Packet(11, "arm", [
-        ])
-    VerresEndConfirm = Packet(12, "pic", [
-        ])
-
-    VerresCatch = Packet(13, "arm", [
-        ])
-    VerresCatchConfirm = Packet(14, "pic", [
-        ])
-
-    VerresOff = Packet(15, "arm", [
-        ])
-    VerresOffConfirm = Packet(16, "pic", [
-        ])
-
-    VerresOn = Packet(17, "arm", [
-        ])
-    VerresOnConfirm = Packet(18, "pic", [
-        ])
 
 class Funny(Proto):
     type = 4
