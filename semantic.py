@@ -10,7 +10,7 @@
 from protos import Packet, Proto
 
 # yymmjjhhmm
-version = 1305070300
+version = 1305070325
 
 class Common(Proto):
     def __init__(self):
@@ -195,6 +195,32 @@ class Mother(Proto):
 
     BougiesOn = Packet(16, "arm")
     BougiesOnConfirm = Packet(17, "pic")
+
+    # Arrêt d’urgence
+    getEmergencyState = Packet(20, "arm")
+    emergencyState = Packet(21, "pic", [
+            ("emergency_state", "B"),
+        )]
+
+    # Trois switchs
+    getSwitchOneState = Packet(30, "pic", [
+    switchOne = Packet(31, "pic", [
+            ("state", "B"),
+        )]
+    getSwitchTwoState = Packet(32, "pic", [
+    switchTwo  = Packet(33, "pic", [
+            ("state", "B"),
+        )]
+    getSwitchThreeState = Packet(34, "pic", [
+    switchThree  = Packet(35, "pic", [
+            ("state", "B"),
+        )]
+
+    # Start Laisse
+    getStartLaisseState = Packet(40, "arm")
+    StartLaisseState = Packet(41, "pic", [
+            ("state", "B"),
+        )]
 
 
 class Sensor(Proto):
