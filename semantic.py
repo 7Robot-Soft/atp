@@ -10,7 +10,7 @@
 from protos import Packet, Proto
 
 # yymmjjhhmm
-version = 1305070325
+version = 1305070329
 
 class Common(Proto):
     def __init__(self):
@@ -171,6 +171,26 @@ class Asserv(Proto):
         ])
 
 
+    # Back Bumper
+    getBackBumperState = Packet(140, "arm")
+    backBumperState = Packet(141, "pic", [
+            ("state", "B"),
+        )]
+
+    # SICKs
+    getSICKValue = Packet(150, "arm", [
+            ("id", "B")
+        ])
+    SICKValue = Packet(151, "pic", [
+            ("id", "B"),
+            ("value", "B")
+        ])
+    setThreshold = Packet(152, "arm", [
+            ("id", "B"),
+            ("threshold", "f")
+        ])
+
+
 class Mother(Proto):
     type = 6
 
@@ -221,22 +241,6 @@ class Mother(Proto):
     StartLaisseState = Packet(41, "pic", [
             ("state", "B"),
         )]
-
-
-class Sensor(Proto):
-    type = 2
-
-    getValue = Packet(1, "arm", [
-            ("id", "B")
-        ])
-    value = Packet(2, "pic", [
-            ("id", "B"),
-            ("value", "B")
-        ])
-    setThreshold = Packet(3, "arm", [
-            ("id", "B"),
-            ("threshold", "f")
-        ])
 
 
 class Funny(Proto):
