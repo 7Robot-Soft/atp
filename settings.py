@@ -2,7 +2,7 @@
 # Default parameters for connect to TCP Hub :
 
 # Default host
-HOST = "tictac"
+HOST = "ash"
 # Base port (port are computed by base port + board id)
 PORT = 1300
 

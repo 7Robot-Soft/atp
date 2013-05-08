@@ -54,21 +54,45 @@ class Demo(Proto):
 class Asserv(Proto):
     type = 5
 
+    free = Packet(0, "arm")
     stop = Packet(1, "arm")
-    done = Packet(2, "pic")
+    resume = Packet(2, "arm")
+    done = Packet(3, "pic")
 
+    # Odométrie
     odoBroadcastOn = Packet(10, "arm")
     odoBroadcastOff = Packet(11, "arm")
     odoBroadcastSetDelay = Packet(12, "arm", [
             ("delay", "H")
         ])
+    # Étalonage de l’odométrie
+    setOdoXTheta = Packet(15, "arm", [
+            ("x", "f"),
+            ("theta", "f")
+        ])
+    setOdoYTheta = Packet(16, "arm", [
+            ("y", "f"),
+            ("theta", "f")
+        ])
+    setOdoXY = Packet(17, "arm", [
+            ("x", "f"),
+            ("y", "f")
+        ])
+    setOdoTheta = Packet(18, "arm", [
+            ("theta", "f")
+        ])
+    setOdoXYTheta = Packet(19, "arm", [
+            ("x", "f"),
+            ("y", "f"),
+            ("theta", "f")
+        ])
 
-    # Distance
+    # Consigne de distance
     setDist = Packet(20, "arm", [
             ("dist", "f")
         ])
 
-    # Position
+    # Consigne de position
     setPos = Packet(30, "arm", [
             ("x", "f"),
             ("y", "f"),
@@ -80,7 +104,7 @@ class Asserv(Proto):
             ("theta", "f"),
         ])
 
-    # Angle
+    # Consigne de position angulaire
     setAngle = Packet(40, "arm", [
             ("theta", "f"),
         ])
@@ -89,7 +113,7 @@ class Asserv(Proto):
             ("theta", "f"),
         ])
 
-    # Vitesse linéaire
+    # Consigne de vitesse linéaire
     setVit = Packet(50, "arm", [
             ("v", "f"),
         ])
@@ -98,7 +122,7 @@ class Asserv(Proto):
             ("v", "f"),
         ])
 
-    # Vitesse de rotation
+    # Consigne de vitesse de rotation
     setOmega = Packet(60, "arm", [
             ("omega", "f"),
         ])
@@ -170,6 +194,20 @@ class Asserv(Proto):
             ("KDt", "f"),
         ])
 
+    # Coefs arrêts
+    setEpsilons = Packet(138, "arm", [
+            ("d", "f"),
+            ("di", "f"),
+            ("t", "f"),
+            ("ti", "f")
+        ])
+
+    # Seuils termes intégraux
+    setSeuils = Packet(139, "arm", [
+            ("distance", "f"),
+            ("angle", "f")
+        ])
+
 
     # Back Bumper
     getBackBumperState = Packet(140, "arm")
@@ -188,6 +226,17 @@ class Asserv(Proto):
     setThreshold = Packet(152, "arm", [
             ("id", "B"),
             ("threshold", "f")
+        ])
+
+    # Points de contrôle d’une trajectoire
+    addPoint = Packet(160, "arm", [
+            ("x", "f"),
+            ("y", "f")
+        ])
+    fullPoints = Packet(161, "pic")
+    clearPoints = Packet(162, "arm")
+    remaining = Packet(163, "pic", [
+            ("n", "H")
         ])
 
 
