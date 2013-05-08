@@ -306,6 +306,7 @@ class Funny(Proto):
             ("threshold", "f")
         ])
 
+# A supprimer, OK ?
 class Buttons(Proto):
     type = 7
     ButtonAction = Packet(1, "pic", [
