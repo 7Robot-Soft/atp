@@ -47,7 +47,11 @@ class AtpSender(QtGui.QTabWidget):
         layout = QtGui.QVBoxLayout()
         widget = QtGui.QWidget()
         sock = socket.socket()
-        sock.connect((self.host, self.port + proto["id"]))
+        try:
+            sock.connect((self.host, self.port + proto["id"]))
+        except:
+            print ("Failed to connect on %s %d" % (self.host, self.port))
+            sys.exit(-1)
         file = sock.makefile(mode="rw")
         chan = Channel(file.buffer, print_packet, proto = name,
                 symmetrical = self.symmetrical)
