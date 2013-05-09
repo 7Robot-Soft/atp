@@ -295,15 +295,15 @@ class Mother(Proto):
         ])
 
     # Trois switchs
-    getSwitchOneState = Packet(30, "pic")
+    getSwitchOneState = Packet(30, "arm")
     switchOne = Packet(31, "pic", [
             ("state", "B"),
         ])
-    getSwitchTwoState = Packet(32, "pic")
+    getSwitchTwoState = Packet(32, "arm")
     switchTwo  = Packet(33, "pic", [
             ("state", "B"),
         ])
-    getSwitchThreeState = Packet(34, "pic")
+    getSwitchThreeState = Packet(34, "arm")
     switchThree  = Packet(35, "pic", [
             ("state", "B"),
         ])
