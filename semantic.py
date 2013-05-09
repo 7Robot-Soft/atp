@@ -10,7 +10,7 @@
 from protos import Packet, Proto
 
 # yymmjjhhmm
-version = 1305100126
+version = 1305100147
 
 class Common(Proto):
     def __init__(self):
@@ -324,6 +324,14 @@ class Mother(Proto):
     # AX12
     stopAX12 = Packet(60, "arm")
     startAX12 = Packet(61, "arm")
+    getAX12Torque = Packet(62, "arm", [
+            ("id", "B"),
+            ("torque", "i"),
+        ])
+    AX12Torque = Packet(62, "pic", [
+            ("id", "B"),
+            ("torque", "i"),
+        ])
 
 
 
