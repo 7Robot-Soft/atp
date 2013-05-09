@@ -319,7 +319,7 @@ class Mother(Proto):
 
     # FunnyAction
     FunnyAction = Packet(50, "arm")
-    EndFunnyAction = Packet(51, "pic")
+    StopFunnyAction = Packet(51, "pic")
 
 
 # A supprimer, OK ?
