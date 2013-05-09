@@ -128,6 +128,9 @@ class Asserv(Proto):
     angle = Packet(42, "pic", [
             ("theta", "f"),
         ])
+    setAngleRampe = Packet(43, "arm", [
+            ("theta", "f"),
+        ])
 
     # Consigne de vitesse linéaire
     setVit = Packet(50, "arm", [
