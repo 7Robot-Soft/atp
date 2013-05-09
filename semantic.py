@@ -314,19 +314,13 @@ class Mother(Proto):
             ("state", "B"),
         ])
 
-
-class Funny(Proto):
-    type = 4
-
+    # FunnyAction
     FunnyAction = Packet(1, "arm", [
         ])
     EndFunnyAction = Packet(2, "pic", [
             ("id", "B")
         ])
-    setThreshold = Packet(3, "arm", [
-            ("id", "B"),
-            ("threshold", "f")
-        ])
+
 
 # A supprimer, OK ?
 class Buttons(Proto):
