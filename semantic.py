@@ -10,7 +10,7 @@
 from protos import Packet, Proto
 
 # yymmjjhhmm
-version = 1305092343
+version = 1305100126
 
 class Common(Proto):
     def __init__(self):
@@ -320,6 +320,11 @@ class Mother(Proto):
     # FunnyAction
     FunnyAction = Packet(50, "arm")
     StopFunnyAction = Packet(51, "arm")
+
+    # AX12
+    stopAX12 = Packet(60, "arm")
+    startAX12 = Packet(61, "arm")
+
 
 
 class Turret(Proto):
