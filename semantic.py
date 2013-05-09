@@ -10,7 +10,7 @@
 from protos import Packet, Proto
 
 # yymmjjhhmm
-version = 1305071419
+version = 1305091502
 
 class Common(Proto):
     def __init__(self):
@@ -237,6 +237,17 @@ class Asserv(Proto):
     clearPoints = Packet(162, "arm")
     remaining = Packet(163, "pic", [
             ("n", "H")
+        ])
+
+    # SICKs
+    SICKsFloodOn = Packet(200, "arm")
+    SICKsFloodOff = Packet(201, "arm")
+    SICKsGetValue = Packet(202, "arm",
+            ("id", "B"),
+        ])
+    SICKsValue = Packet(203, "pic"
+            ("id", "B"),
+            ("value", "h"),
         ])
 
 
