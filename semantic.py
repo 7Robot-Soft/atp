@@ -58,6 +58,19 @@ class Asserv(Proto):
     stop = Packet(1, "arm")
     resume = Packet(2, "arm")
     done = Packet(3, "pic")
+    modes = Packet(4, "pic", [
+            ("point", "h"),
+            ("distance", "h"),
+            ("angle", "h"),
+            ("vitesse", "h"),
+            ("omega", "h")
+        ])
+    infos = Packet(5, "pic", [
+            ("distance", "f"),
+            ("angle", "f"),
+            ("vitesse", "f"),
+            ("omega", "f")
+        ])
 
     # Odométrie
     odoBroadcastOn = Packet(10, "arm")
@@ -89,6 +102,9 @@ class Asserv(Proto):
 
     # Consigne de distance
     setDist = Packet(20, "arm", [
+            ("dist", "f")
+        ])
+    setDistRampe = Packet(21, "arm", [
             ("dist", "f")
         ])
 
@@ -195,11 +211,19 @@ class Asserv(Proto):
         ])
 
     # Coefs arrêts
-    setEpsilons = Packet(138, "arm", [
+    setEpsilons = Packet(136, "arm", [
             ("d", "f"),
             ("di", "f"),
             ("t", "f"),
             ("ti", "f")
+        ])
+
+    # Coefs accélération max et vitesse max
+    setLimits = Packet(137, "arm", [
+            ("accD", "f"),
+            ("accT", "f"),
+            ("vMax", "f"),
+            ("oMax", "f")
         ])
 
     # Seuils termes intégraux
