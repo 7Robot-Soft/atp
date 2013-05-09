@@ -242,10 +242,10 @@ class Asserv(Proto):
     # SICKs
     SICKsFloodOn = Packet(200, "arm")
     SICKsFloodOff = Packet(201, "arm")
-    SICKsGetValue = Packet(202, "arm",
+    SICKsGetValue = Packet(202, "arm", [
             ("id", "B"),
         ])
-    SICKsValue = Packet(203, "pic"
+    SICKsValue = Packet(203, "pic", [
             ("id", "B"),
             ("value", "h"),
         ])
