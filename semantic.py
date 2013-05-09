@@ -223,10 +223,8 @@ class Asserv(Proto):
             ("id", "B"),
             ("value", "B")
         ])
-    setThreshold = Packet(152, "arm", [
-            ("id", "B"),
-            ("threshold", "f")
-        ])
+    SICKFloodOn = Packet(152, "arm")
+    SICKFloodOff = Packet(153, "arm")
 
     # Points de contrôle d’une trajectoire
     addPoint = Packet(160, "arm", [
@@ -237,17 +235,6 @@ class Asserv(Proto):
     clearPoints = Packet(162, "arm")
     remaining = Packet(163, "pic", [
             ("n", "H")
-        ])
-
-    # SICKs
-    SICKsFloodOn = Packet(200, "arm")
-    SICKsFloodOff = Packet(201, "arm")
-    SICKsGetValue = Packet(202, "arm", [
-            ("id", "B"),
-        ])
-    SICKsValue = Packet(203, "pic", [
-            ("id", "B"),
-            ("value", "h"),
         ])
 
 
