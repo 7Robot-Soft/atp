@@ -318,8 +318,8 @@ class Mother(Proto):
         ])
 
     # FunnyAction
-    FunnyAction = Packet(1, "arm")
-    EndFunnyAction = Packet(2, "pic")
+    FunnyAction = Packet(50, "arm")
+    EndFunnyAction = Packet(51, "pic")
 
 
 # A supprimer, OK ?
