@@ -39,7 +39,7 @@ class Demo(Proto):
     blinkOff = Packet(2, "arm")
 
     setDelay = Packet(3, "arm", [
-            ("delay", "H")
+            ("delay", "h")
         ])
 
     ledOn = Packet(4, "arm")
@@ -53,6 +53,16 @@ class Demo(Proto):
 
 class Asserv(Proto):
     type = 5
+
+    # Message de debug
+    debugFloats = Packet(1, "pic", [
+            ("x", "f"),
+            ("y", "f"),
+            ("t", "f")
+        ])
+    mode = Packet(2, "pic", [
+            ("mode", "H")
+        ])
 
     # Odométrie
     odoBroadcastOn = Packet(10, "arm")
@@ -86,6 +96,13 @@ class Asserv(Proto):
             ("x", "f"),
             ("y", "f"),
             ("theta", "f")
+        ])
+
+    setOdoTicByMeter = Packet(28, "arm", [
+            ("tbm", "h")
+        ])
+    setOdoSpacing = Packet(29, "arm", [
+            ("spacing", "f")
         ])
 
     # Demande de la position à l’odométrie
@@ -140,30 +157,54 @@ class Asserv(Proto):
     omega = Packet(61, "arm", [
             ("omega", "f")
         ])
-    cercle = Packet(62, "arm", [
+    speedSansRampe = Packet(62, "arm", [
+            ("speed", "f")
+        ])
+    omegaSansRampe = Packet(63, "arm", [
+            ("omega", "f")
+        ])
+    cercle= Packet(64, "arm", [
             ("rayon", "f"),
             ("speed", "f")
         ])
-    arcCercle = Packet(63, "arm", [
+    arcCercle= Packet(65, "arm", [
+            ("rayon", "f"),
+            ("theta", "f")
+        ])
+    cercleSansRampe = Packet(66, "arm", [
+            ("rayon", "f"),
+            ("speed", "f")
+        ])
+    arcCercleSansRampe = Packet(67, "arm", [
             ("rayon", "f"),
             ("theta", "f")
         ])
 
     # Paramètres
-    setLimits = Packet(70, "arm", [
+    setDistLimits = Packet(70, "arm", [
+            ("vMax", "f"),
+            ("aMax", "f"),
+            ("dMax", "f")
+        ])
+    setRotLimits = Packet(71, "arm", [
             ("vMax", "f"),
             ("aMax", "f"),
             ("dMax", "f")
         ])
 
-    setEpsilons = Packet(71, "arm", [
+    setEpsilons = Packet(72, "arm", [
             ("Ed", "f"),
             ("Ev", "f"),
             ("Et", "f"),
             ("Eo", "f")
         ])
 
-    setCoefsPID = Packet(72, "arm", [
+    setDeltaCoefs = Packet(72, "arm", [
+            ("P", "f"),
+            ("I", "f"),
+            ("D", "f")
+        ])
+    setAlphaCoefs = Packet(73, "arm", [
             ("P", "f"),
             ("I", "f"),
             ("D", "f")
