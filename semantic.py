@@ -10,7 +10,7 @@
 from protos import Packet, Proto
 
 # yymmjjhhmm
-version = 1305100635
+version = 1305100708
 
 class Common(Proto):
     def __init__(self):
@@ -252,6 +252,14 @@ class Asserv(Proto):
         ])
     SICKFloodOn = Packet(152, "arm")
     SICKFloodOff = Packet(153, "arm")
+
+    setSICKFloodDivisorFactor = Packet(154, "arm", [
+            ("value", "I"),
+        ])
+    getSICKFloodDivisorFactor = Packet(155, "arm", [
+    SICKFloodDivisorFactor = Packet(156, "pic", [
+            ("value", "I"),
+        ])
 
     # Points de contrôle d’une trajectoire
     addPoint = Packet(160, "arm", [
