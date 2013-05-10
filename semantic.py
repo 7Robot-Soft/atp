@@ -10,7 +10,7 @@
 from protos import Packet, Proto
 
 # yymmjjhhmm
-version = 1305091502
+version = 1305100726
 
 class Common(Proto):
     def __init__(self):
@@ -173,7 +173,7 @@ class Asserv(Proto):
     # Back Bumper
     getBackBumperState = Packet(140, "arm")
     backBumperState = Packet(141, "pic", [
-            ("state", "B"),
+            ("state", "I"),
         ])
 
     # SICKs
@@ -186,6 +186,8 @@ class Asserv(Proto):
         ])
     SICKFloodOn = Packet(152, "arm")
     SICKFloodOff = Packet(153, "arm")
+    SICKChangeOn = Packet(154, "arm")
+    SICKChangeOff = Packet(155, "arm")
 
 
 class Mother(Proto):
@@ -242,16 +244,21 @@ class Mother(Proto):
 
     # FunnyAction
     FunnyAction = Packet(50, "arm")
-    EndFunnyAction = Packet(51, "pic")
+    StopFunnyAction = Packet(51, "arm")
+
+    # AX12
+    stopAX12 = Packet(60, "arm")
+    startAX12 = Packet(61, "arm")
+    getAX12Torque = Packet(62, "arm", [
+            ("id", "B"),
+            ("torque", "i"),
+        ])
+    AX12Torque = Packet(62, "pic", [
+            ("id", "B"),
+            ("torque", "i"),
+        ])
 
 
-# A supprimer, OK ?
-class Buttons(Proto):
-    type = 7
-    ButtonAction = Packet(1, "pic", [
-        ("id", "B"),
-        ("state", "B") # open/close
-    ])
 
 class Turret(Proto):
     type = 8
