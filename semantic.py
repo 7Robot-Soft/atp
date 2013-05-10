@@ -54,24 +54,6 @@ class Demo(Proto):
 class Asserv(Proto):
     type = 5
 
-    free = Packet(0, "arm")
-    stop = Packet(1, "arm")
-    resume = Packet(2, "arm")
-    done = Packet(3, "pic")
-    modes = Packet(4, "pic", [
-            ("point", "h"),
-            ("distance", "h"),
-            ("angle", "h"),
-            ("vitesse", "h"),
-            ("omega", "h")
-        ])
-    infos = Packet(5, "pic", [
-            ("distance", "f"),
-            ("angle", "f"),
-            ("vitesse", "f"),
-            ("omega", "f")
-        ])
-
     # Odométrie
     odoBroadcastOn = Packet(10, "arm")
     odoBroadcastOff = Packet(11, "arm")
@@ -79,160 +61,31 @@ class Asserv(Proto):
             ("delay", "H")
         ])
     # Étalonage de l’odométrie
-    setOdoXTheta = Packet(15, "arm", [
-            ("x", "f"),
+    setOdoX = Packet(10, "arm", [
+            ("x", "f")
+        ])
+    setOdoY = Packet(11, "arm", [
+            ("y", "f")
+        ])
+    setOdoTheta = Packet(12, "arm", [
             ("theta", "f")
         ])
-    setOdoYTheta = Packet(16, "arm", [
-            ("y", "f"),
-            ("theta", "f")
-        ])
-    setOdoXY = Packet(17, "arm", [
+    setOdoXY = Packet(13, "arm", [
             ("x", "f"),
             ("y", "f")
         ])
-    setOdoTheta = Packet(18, "arm", [
+    setOdoXTheta = Packet(14, "arm", [
+            ("x", "f"),
             ("theta", "f")
         ])
-    setOdoXYTheta = Packet(19, "arm", [
-            ("x", "f"),
+    setOdoYTheta = Packet(15, "arm", [
             ("y", "f"),
             ("theta", "f")
         ])
-
-    # Consigne de distance
-    setDist = Packet(20, "arm", [
-            ("dist", "f")
-        ])
-    setDistRampe = Packet(21, "arm", [
-            ("dist", "f")
-        ])
-
-    # Consigne de position
-    setPos = Packet(30, "arm", [
+    setOdoXYTheta = Packet(16, "arm", [
             ("x", "f"),
             ("y", "f"),
-        ])
-    getPos = Packet(31, "arm")
-    pos = Packet(32, "pic", [
-            ("x", "f"),
-            ("y", "f"),
-            ("theta", "f"),
-        ])
-
-    # Consigne de position angulaire
-    setAngle = Packet(40, "arm", [
-            ("theta", "f"),
-        ])
-    getAngle = Packet(41, "arm")
-    angle = Packet(42, "pic", [
-            ("theta", "f"),
-        ])
-    setAngleRampe = Packet(43, "arm", [
-            ("theta", "f"),
-        ])
-
-    # Consigne de vitesse linéaire
-    setVit = Packet(50, "arm", [
-            ("v", "f"),
-        ])
-    getVit = Packet(51, "arm")
-    vit = Packet(52, "pic", [
-            ("v", "f"),
-        ])
-
-    # Consigne de vitesse de rotation
-    setOmega = Packet(60, "arm", [
-            ("omega", "f"),
-        ])
-    getOmega = Packet(61, "arm")
-    omega = Packet(62, "pic", [
-            ("omega", "f"),
-        ])
-
-    # Vitesses
-    setCourbe = Packet(70, "arm", [
-            ("v", "f"),
-            ("omega", "f"),
-        ])
-    getCourbe = Packet(71, "arm")
-    courbe = Packet(72, "pic", [
-            ("v", "f"),
-            ("omega", "f"),
-        ])
-
-    # Coefs asserv vitesse linéaire
-    setAsservV = Packet(100, "arm", [
-            ("KPv", "f"),
-            ("KIv", "f"),
-            ("KDv", "f"),
-        ])
-    getAsservV = Packet(101, "arm")
-    asservV = Packet(102, "pic", [
-            ("KPv", "f"),
-            ("KIv", "f"),
-            ("KDv", "f"),
-        ])
-
-    # Coefs asserv vitesse angulaire
-    setAsservO = Packet(110, "arm", [
-            ("KPo", "f"),
-            ("KIo", "f"),
-            ("KDo", "f"),
-        ])
-    getAsservO = Packet(111, "arm")
-    asservO = Packet(112, "pic", [
-            ("KPo", "f"),
-            ("KIo", "f"),
-            ("KDo", "f"),
-        ])
-
-    # Coefs asserv position linéaire
-    setAsservD = Packet(120, "arm", [
-            ("KPd", "f"),
-            ("KId", "f"),
-            ("KDd", "f"),
-        ])
-    getAsservD = Packet(121, "arm")
-    asservD = Packet(122, "pic", [
-            ("KPd", "f"),
-            ("KId", "f"),
-            ("KDd", "f"),
-        ])
-
-    # Coefs asserv position angulaire
-    setAsservT = Packet(130, "arm", [
-            ("KPt", "f"),
-            ("KIt", "f"),
-            ("KDt", "f"),
-        ])
-    getAsservT = Packet(131, "arm")
-    asservT = Packet(132, "pic", [
-            ("KPt", "f"),
-            ("KIt", "f"),
-            ("KDt", "f"),
-        ])
-
-    # Coefs arrêts
-    setEpsilons = Packet(136, "arm", [
-            ("d", "f"),
-            ("di", "f"),
-            ("t", "f"),
-            ("ti", "f")
-        ])
-
-    # Coefs accélération max et vitesse max
-    setLimits = Packet(137, "arm", [
-            ("accD", "f"),
-            ("accT", "f"),
-            ("vMax", "f"),
-            ("oMax", "f")
-        ])
-
-    # Seuils termes intégraux
-    setSeuils = Packet(139, "arm", [
-            ("distance", "f"),
-            ("angle", "f")
+            ("theta", "f")
         ])
 
 
@@ -252,17 +105,6 @@ class Asserv(Proto):
         ])
     SICKFloodOn = Packet(152, "arm")
     SICKFloodOff = Packet(153, "arm")
-
-    # Points de contrôle d’une trajectoire
-    addPoint = Packet(160, "arm", [
-            ("x", "f"),
-            ("y", "f")
-        ])
-    fullPoints = Packet(161, "pic")
-    clearPoints = Packet(162, "arm")
-    remaining = Packet(163, "pic", [
-            ("n", "H")
-        ])
 
 
 class Mother(Proto):
