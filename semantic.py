@@ -117,6 +117,7 @@ class Asserv(Proto):
     stop = Packet(40, "arm")
     pause = Packet(41, "arm")
     resume = Packet(42, "arm")
+    done = Packet(43, "pic")
 
     # Primitive de déplacement
     distSansRampe = Packet(50, "arm", [
@@ -199,12 +200,12 @@ class Asserv(Proto):
             ("Eo", "f")
         ])
 
-    setDeltaCoefs = Packet(72, "arm", [
+    setDeltaCoefs = Packet(73, "arm", [
             ("P", "f"),
             ("I", "f"),
             ("D", "f")
         ])
-    setAlphaCoefs = Packet(73, "arm", [
+    setAlphaCoefs = Packet(74, "arm", [
             ("P", "f"),
             ("I", "f"),
             ("D", "f")
