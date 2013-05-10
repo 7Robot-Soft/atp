@@ -10,7 +10,7 @@
 from protos import Packet, Proto
 
 # yymmjjhhmm
-version = 1305100601
+version = 1305100635
 
 class Common(Proto):
     def __init__(self):
@@ -239,7 +239,7 @@ class Asserv(Proto):
     # Back Bumper
     getBackBumperState = Packet(140, "arm")
     backBumperState = Packet(141, "pic", [
-            ("state", "B"),
+            ("state", "I"),
         ])
 
     # SICKs
