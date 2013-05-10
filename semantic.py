@@ -61,28 +61,28 @@ class Asserv(Proto):
             ("delay", "H")
         ])
     # Étalonage de l’odométrie
-    setOdoX = Packet(10, "arm", [
+    setOdoX = Packet(20, "arm", [
             ("x", "f")
         ])
-    setOdoY = Packet(11, "arm", [
+    setOdoY = Packet(21, "arm", [
             ("y", "f")
         ])
-    setOdoTheta = Packet(12, "arm", [
+    setOdoTheta = Packet(22, "arm", [
             ("theta", "f")
         ])
-    setOdoXY = Packet(13, "arm", [
+    setOdoXY = Packet(23, "arm", [
             ("x", "f"),
             ("y", "f")
         ])
-    setOdoXTheta = Packet(14, "arm", [
+    setOdoXTheta = Packet(24, "arm", [
             ("x", "f"),
             ("theta", "f")
         ])
-    setOdoYTheta = Packet(15, "arm", [
+    setOdoYTheta = Packet(25, "arm", [
             ("y", "f"),
             ("theta", "f")
         ])
-    setOdoXYTheta = Packet(16, "arm", [
+    setOdoXYTheta = Packet(26, "arm", [
             ("x", "f"),
             ("y", "f"),
             ("theta", "f")
