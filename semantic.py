@@ -88,6 +88,87 @@ class Asserv(Proto):
             ("theta", "f")
         ])
 
+    # Demande de la position à l’odométrie
+    getPos = Packet(30, "arm")
+    pos = Packet(31, "pic", [
+            ("x", "f"),
+            ("y", "f"),
+            ("theta", "f")
+        ])
+
+    # Asservissement
+    stop = Packet(40, "arm")
+    pause = Packet(41, "arm")
+    resume = Packet(42, "arm")
+
+    # Primitive de déplacement
+    distSansRampe = Packet(50, "arm", [
+            ("dist", "f")
+        ])
+    rotSansRampe = Packet(51, "arm", [
+            ("rot", "f")
+        ])
+    cercleSansRampe = Packet(52, "arm", [
+            ("speed", "f")
+            ("omega", "f")
+        ])
+
+    dist = Packet(53, "arm", [
+            ("dist", "f")
+        ])
+    rot = Packet(54, "arm", [
+            ("rot", "f")
+        ])
+
+    reachX = Packet(55, "arm", [
+            ("x", "f")
+        ])
+    reachY = Packet(56, "arm", [
+            ("y", "f")
+        ])
+    reachTheta = Packet(57, "arm", [
+            ("theta", "f")
+        ])
+    reachXY = Packet(58, "arm", [
+            ("x", "f"),
+            ("y", "f")
+        ])
+
+    speed = Packet(60, "arm", [
+            ("speed", "f")
+        ])
+    omega = Packett(61, "arm", [
+            ("omega", "f")
+        ])
+    cercle = Packet(62, "arm", [
+            ("rayon", "f"),
+            ("speed", "f")
+        ])
+    arcCercle = Packet(63, "arm", [
+            ("rayon", "f"),
+            ("theta", "f")
+        ])
+
+    # Paramètres
+    setLimits = Packet(70, "arm", [
+            ("vMax", "f"),
+            ("aMax", "f"),
+            ("dMax", "f")
+        ])
+
+    setEpsilons = Packet(71, "arm", [
+            ("Ed", "f"),
+            ("Ev", "f"),
+            ("Et", "f"),
+            ("Eo", "f")
+        ])
+
+    setCoefsPID = Packet(72, "arm", [
+            ("P", "f"),
+            ("I", "f"),
+            ("D", "f")
+        ])
+
 
     # Back Bumper
     getBackBumperState = Packet(140, "arm")
