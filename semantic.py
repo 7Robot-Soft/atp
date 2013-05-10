@@ -10,7 +10,7 @@
 from protos import Packet, Proto
 
 # yymmjjhhmm
-version = 1305100711
+version = 1305100712
 
 class Common(Proto):
     def __init__(self):
@@ -256,7 +256,7 @@ class Asserv(Proto):
     setSICKFloodDivisorFactor = Packet(154, "arm", [
             ("value", "I"),
         ])
-    getSICKFloodDivisorFactor = Packet(155, "arm", [
+    getSICKFloodDivisorFactor = Packet(155, "arm")
     SICKFloodDivisorFactor = Packet(156, "pic", [
             ("value", "I"),
         ])
