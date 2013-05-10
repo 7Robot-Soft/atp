@@ -10,7 +10,7 @@
 from protos import Packet, Proto
 
 # yymmjjhhmm
-version = 1305100708
+version = 1305100711
 
 class Common(Proto):
     def __init__(self):
