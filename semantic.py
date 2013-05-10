@@ -63,6 +63,16 @@ class Asserv(Proto):
     mode = Packet(2, "pic", [
             ("mode", "H")
         ])
+    logRampe = Packet(3, "pic", [
+            ("end", "f"),
+            ("periode", "f"),
+            ("vInit", "f"),
+            ("vFin", "f"),
+            ("vMax", "f"),
+            ("aMax", "f"),
+            ("dMax", "f"),
+            ("speedIsMoreImportante", "h")
+        ])
 
     # Odométrie
     odoBroadcastOn = Packet(10, "arm")
