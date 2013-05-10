@@ -10,7 +10,7 @@
 from protos import Packet, Proto
 
 # yymmjjhhmm
-version = 1305100147
+version = 1305100540
 
 class Common(Proto):
     def __init__(self):
@@ -252,6 +252,13 @@ class Asserv(Proto):
         ])
     SICKFloodOn = Packet(152, "arm")
     SICKFloodOff = Packet(153, "arm")
+    setSICKDelay = Packet(154, "arm", [
+            ("delay", "I")
+        ])
+    getSICKDelay = Packet(155, "arm")
+    SICKDelay = Packet(156, "pic", [
+            ("delay", "I")
+        ])
 
     # Points de contrôle d’une trajectoire
     addPoint = Packet(160, "arm", [
