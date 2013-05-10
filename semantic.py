@@ -109,7 +109,7 @@ class Asserv(Proto):
             ("rot", "f")
         ])
     cercleSansRampe = Packet(52, "arm", [
-            ("speed", "f")
+            ("speed", "f"),
             ("omega", "f")
         ])
 
@@ -137,7 +137,7 @@ class Asserv(Proto):
     speed = Packet(60, "arm", [
             ("speed", "f")
         ])
-    omega = Packett(61, "arm", [
+    omega = Packet(61, "arm", [
             ("omega", "f")
         ])
     cercle = Packet(62, "arm", [
