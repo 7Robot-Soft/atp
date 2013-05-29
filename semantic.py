@@ -10,7 +10,7 @@
 from protos import Packet, Proto
 
 # yymmjjhhmm
-version = 1305070329
+version = 1305291511
 
 class Common(Proto):
     def __init__(self):
@@ -57,138 +57,114 @@ class Asserv(Proto):
     stop = Packet(1, "arm")
     done = Packet(2, "pic")
 
-    odoBroadcastOn = Packet(10, "arm")
-    odoBroadcastOff = Packet(11, "arm")
-    odoBroadcastSetDelay = Packet(12, "arm", [
-            ("delay", "H")
+    step = Packet(10, "arm", [
+        ("period", "I"),
+        ("ticsG", "I"),
+        ("ticsD", "I"),
+        ("consignG", "f"),
+        ("consignD", "f")
         ])
 
-    # Distance
-    setDist = Packet(20, "arm", [
-            ("dist", "f")
+    setEpsilons = Packet(11, "arm", [
+        ("dist", "f"),
+        ("speed", "f"),
+        ("theta", "f"),
+        ("omega", "f")
         ])
 
-    # Position
-    setPos = Packet(30, "arm", [
-            ("x", "f"),
-            ("y", "f"),
-        ])
-    getPos = Packet(31, "arm")
-    pos = Packet(32, "pic", [
-            ("x", "f"),
-            ("y", "f"),
-            ("theta", "f"),
+    dist = Packet(12, "arm", [
+        ("dist", "f"),
+        ("vMax", "f"),
+        ("aMax", "f"),
         ])
 
-    # Angle
-    setAngle = Packet(40, "arm", [
-            ("theta", "f"),
-        ])
-    getAngle = Packet(41, "arm")
-    angle = Packet(42, "pic", [
-            ("theta", "f"),
+    rot = Packet(13, "arm", [
+        ("rot", "f"),
+        ("vMax", "f"),
+        ("aMax", "f"),
         ])
 
-    # Vitesse linéaire
-    setVit = Packet(50, "arm", [
-            ("v", "f"),
-        ])
-    getVit = Packet(51, "arm")
-    vit = Packet(52, "pic", [
-            ("v", "f"),
+    distFree = Packet(14, "arm", [
+        ("dist", "f")
         ])
 
-    # Vitesse de rotation
-    setOmega = Packet(60, "arm", [
-            ("omega", "f"),
-        ])
-    getOmega = Packet(61, "arm")
-    omega = Packet(62, "pic", [
-            ("omega", "f"),
+    rotFree = Packet(15, "arm", [
+        ("rot", "f")
         ])
 
-    # Vitesses
-    setCourbe = Packet(70, "arm", [
-            ("v", "f"),
-            ("omega", "f"),
-        ])
-    getCourbe = Packet(71, "arm")
-    courbe = Packet(72, "pic", [
-            ("v", "f"),
-            ("omega", "f"),
+    distRot = Packet(16, "arm", [
+        ("dist", "f"),
+        ("rot", "f"),
+        ("vDistMax", "f"),
+        ("aDistMax", "f"),
+        ("vRotMax", "f"),
+        ("aRotMax", "f")
         ])
 
-    # Coefs asserv vitesse linéaire
-    setAsservV = Packet(100, "arm", [
-            ("KPv", "f"),
-            ("KIv", "f"),
-            ("KDv", "f"),
-        ])
-    getAsservV = Packet(101, "arm")
-    asservV = Packet(102, "pic", [
-            ("KPv", "f"),
-            ("KIv", "f"),
-            ("KDv", "f"),
+    reachX = Packet(17, "arm", [
+        ("x", "f"),
+        ("vMax", "f"),
+        ("aMax", "f")
         ])
 
-    # Coefs asserv vitesse angulaire
-    setAsservO = Packet(110, "arm", [
-            ("KPo", "f"),
-            ("KIo", "f"),
-            ("KDo", "f"),
-        ])
-    getAsservO = Packet(111, "arm")
-    asservO = Packet(112, "pic", [
-            ("KPo", "f"),
-            ("KIo", "f"),
-            ("KDo", "f"),
+    reachY = Packet(18, "arm", [
+        ("y", "f"),
+        ("vMax", "f"),
+        ("aMax", "f")
         ])
 
-    # Coefs asserv position linéaire
-    setAsservD = Packet(120, "arm", [
-            ("KPd", "f"),
-            ("KId", "f"),
-            ("KDd", "f"),
-        ])
-    getAsservD = Packet(121, "arm")
-    asservD = Packet(122, "pic", [
-            ("KPd", "f"),
-            ("KId", "f"),
-            ("KDd", "f"),
+    reachTheta = Packet(19, "arm", [
+        ("theta", "f"),
+        ("vMax", "f"),
+        ("aMax", "f")
         ])
 
-    # Coefs asserv position angulaire
-    setAsservT = Packet(130, "arm", [
-            ("KPt", "f"),
-            ("KIt", "f"),
-            ("KDt", "f"),
-        ])
-    getAsservT = Packet(131, "arm")
-    asservT = Packet(132, "pic", [
-            ("KPt", "f"),
-            ("KIt", "f"),
-            ("KDt", "f"),
+    speed = Packet(20, "arm", [
+        ("speed", "f"),
+        ("aMax", "f"),
+        ("dMax", "f")
         ])
 
-
-    # Back Bumper
-    getBackBumperState = Packet(140, "arm")
-    backBumperState = Packet(141, "pic", [
-            ("state", "B"),
+    speedFree = Packet(21, "arm", [
+        ("speed", "f")
         ])
 
-    # SICKs
-    getSICKValue = Packet(150, "arm", [
-            ("id", "B")
+    omega = Packet(22, "arm", [
+        ("omega", "f"),
+        ("aMax", "f"),
+        ("dMax", "f")
         ])
-    SICKValue = Packet(151, "pic", [
-            ("id", "B"),
-            ("value", "B")
+
+    speedOmega = Packet(23, "arm", [
+        ("speed", "f"),
+        ("omega", "f"),
+        ("aDistMax", "f"),
+        ("dDistMax", "f"),
+        ("aRotMax", "f"),
+        ("dRotMax", "f")
         ])
-    setThreshold = Packet(152, "arm", [
-            ("id", "B"),
-            ("threshold", "f")
+
+    getX = Packet(30, "arm")
+    setX = Packet(31, "arm", [("x", "f")])
+    X = Packet(32, "pic", [("x", "f")])
+
+    getY = Packet(33, "arm")
+    setY = Packet(34, "arm", [("y", "f")])
+    Y = Packet(35, "pic", [("y", "f")])
+
+    getTheta = Packet(36, "arm")
+    setTheta = Packet(37, "arm", [("theta", "f")])
+    theta = Packet(38, "pic", [("theta", "f")])
+
+    getPos = Packet(39, "arm")
+    pos = Packet(40, "pic", [
+        ("x", "f"),
+        ("y", "f"),
+        ("theta", "f")
         ])
+
+    setTicByMeter = Packet(41, "arm", [("tic_by_meter", "I")])
+    setSpacing = Packet(42, "arm", [("spacing", "f")])
 
 
 class Mother(Proto):
