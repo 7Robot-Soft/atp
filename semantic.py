@@ -10,7 +10,7 @@
 from protos import Packet, Proto
 
 # yymmjjhhmm
-version = 1305291511
+version = 1305291610
 
 class Common(Proto):
     def __init__(self):
@@ -61,8 +61,8 @@ class Asserv(Proto):
         ("period", "I"),
         ("ticsG", "I"),
         ("ticsD", "I"),
-        ("consignG", "f"),
-        ("consignD", "f")
+        ("consignG", "i"),
+        ("consignD", "i")
         ])
 
     setEpsilons = Packet(11, "arm", [
