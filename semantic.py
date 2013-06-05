@@ -10,7 +10,7 @@
 from protos import Packet, Proto
 
 # yymmjjhhmm
-version = 1306051506
+version = 1306051624
 
 class Common(Proto):
     def __init__(self):
@@ -165,6 +165,14 @@ class Asserv(Proto):
 
     setTicByMeter = Packet(41, "arm", [("tic_by_meter", "I")])
     setSpacing = Packet(42, "arm", [("spacing", "f")])
+
+    odoBroadcastOn = Packet(43, "arm")
+    odoBroadcastOff = Packet(44, "arm")
+    odoBroadcastToggle = Packet(45, "arm")
+
+    setXTheta = Packet(46, "arm", [("x", "f"), ("theta", "f")])
+    setYTheta = Packet(47, "arm", [("y", "f"), ("theta", "f")])
+    setXYTheta = Packet(48, "arm", [("x", "f"), ("y", "f"), ("theta", "f")])
 
 
 class Mother(Proto):
