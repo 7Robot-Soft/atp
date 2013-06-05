@@ -10,7 +10,7 @@
 from protos import Packet, Proto
 
 # yymmjjhhmm
-version = 1306051624
+version = 1306051704
 
 class Common(Proto):
     def __init__(self):
@@ -169,10 +169,11 @@ class Asserv(Proto):
     odoBroadcastOn = Packet(43, "arm")
     odoBroadcastOff = Packet(44, "arm")
     odoBroadcastToggle = Packet(45, "arm")
+    odoDelay = Packet(46, "arm", [("delay", "I")])
 
-    setXTheta = Packet(46, "arm", [("x", "f"), ("theta", "f")])
-    setYTheta = Packet(47, "arm", [("y", "f"), ("theta", "f")])
-    setXYTheta = Packet(48, "arm", [("x", "f"), ("y", "f"), ("theta", "f")])
+    setXTheta = Packet(47, "arm", [("x", "f"), ("theta", "f")])
+    setYTheta = Packet(48, "arm", [("y", "f"), ("theta", "f")])
+    setXYTheta = Packet(49, "arm", [("x", "f"), ("y", "f"), ("theta", "f")])
 
 
 class Mother(Proto):
