@@ -10,7 +10,7 @@
 from protos import Packet, Proto
 
 # yymmjjhhmm
-version = 1305291610
+version = 1306051506
 
 class Common(Proto):
     def __init__(self):
@@ -32,23 +32,23 @@ class Common(Proto):
             ("id", "B")
         ])
 
-class Demo(Proto):
-    type = 1
-
-    blinkOn = Packet(1, "arm")
-    blinkOff = Packet(2, "arm")
-
-    setDelay = Packet(3, "arm", [
-            ("delay", "H")
-        ])
-
-    ledOn = Packet(4, "arm")
-    ledOff = Packet(5, "arm")
-
-    setCallback = Packet(6, "arm", [
-            ("nbloop", "B")
-        ])
-    callback = Packet(7, "pic")
+#class Demo(Proto):
+#    type = 1
+#
+#    blinkOn = Packet(1, "arm")
+#    blinkOff = Packet(2, "arm")
+#
+#    setDelay = Packet(3, "arm", [
+#            ("delay", "H")
+#        ])
+#
+#    ledOn = Packet(4, "arm")
+#    ledOff = Packet(5, "arm")
+#
+#    setCallback = Packet(6, "arm", [
+#            ("nbloop", "B")
+#        ])
+#    callback = Packet(7, "pic")
 
 
 class Asserv(Proto):
@@ -200,15 +200,15 @@ class Mother(Proto):
         ])
 
     # Trois switchs
-    getSwitchOneState = Packet(30, "pic")
+    getSwitchOneState = Packet(30, "arm")
     switchOne = Packet(31, "pic", [
             ("state", "B"),
         ])
-    getSwitchTwoState = Packet(32, "pic")
+    getSwitchTwoState = Packet(32, "arm")
     switchTwo  = Packet(33, "pic", [
             ("state", "B"),
         ])
-    getSwitchThreeState = Packet(34, "pic")
+    getSwitchThreeState = Packet(34, "arm")
     switchThree  = Packet(35, "pic", [
             ("state", "B"),
         ])
@@ -219,26 +219,22 @@ class Mother(Proto):
             ("state", "B"),
         ])
 
+    # FunnyAction
+    FunnyAction = Packet(50, "arm")
+    StopFunnyAction = Packet(51, "arm")
 
-class Funny(Proto):
-    type = 4
-
-    FunnyAction = Packet(1, "arm", [
-        ])
-    EndFunnyAction = Packet(2, "pic", [
-            ("id", "B")
-        ])
-    setThreshold = Packet(3, "arm", [
+    # AX12
+    stopAX12 = Packet(60, "arm")
+    startAX12 = Packet(61, "arm")
+    getAX12Torque = Packet(62, "arm", [
             ("id", "B"),
-            ("threshold", "f")
+            ("torque", "i"),
+        ])
+    AX12Torque = Packet(62, "pic", [
+            ("id", "B"),
+            ("torque", "i"),
         ])
 
-class Buttons(Proto):
-    type = 7
-    ButtonAction = Packet(1, "pic", [
-        ("id", "B"),
-        ("state", "B") # open/close
-    ])
 
 class Turret(Proto):
     type = 8
