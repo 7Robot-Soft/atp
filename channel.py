@@ -8,6 +8,16 @@ import socket
 from logging import getLogger
 from symmetrical import symmetrical
 
+human_formats = {
+        'B': 'unsigned char',
+        'H': 'unsigned short',
+        'I': 'unsigned int',
+        'b': 'signed char',
+        'h': 'signed short',
+        'i': 'signed int',
+        'f': 'float',
+        }
+
 class Channel:
 
     def __init__(self, stream, callback, **kwargs):
@@ -117,6 +127,9 @@ class Channel:
                 self._logger.warning("'%s' expects %d arguments, %d given" \
                         ", packet not sended !"
                         %(name, len(packet['args']), len(args)))
+        send.__doc__ = '\n'
+        for arg in packet['args']:
+            send.__doc__ += "\t%s: %s\n" %(arg, human_formats[packet['args'][arg]])
         return send
 
     def send(self, name, packet, *args):
