@@ -10,14 +10,14 @@
 from protos import Packet, Proto
 
 # yymmjjhhmm
-version = 1305100726
+version = 1306051704
 
 class Common(Proto):
     def __init__(self):
         print("Common")
         super(Common, self)
 
-    test = Packet(250, "both", [
+    test = Packet(252, "both", [
             ("B", "B"),
             ("H", "H"),
             ("I", "I"),
@@ -26,8 +26,6 @@ class Common(Proto):
             ("i", "i"),
             ("f", "f")
         ])
-    unknow = Packet(251, "pic")
-    unimplemented = Packet(252, "pic")
     error = Packet(253, "pic")
     getId = Packet(254, "arm")
     id = Packet(255, "pic", [
@@ -56,192 +54,126 @@ class Common(Proto):
 class Asserv(Proto):
     type = 5
 
-    # Message de debug
-    debugFloats = Packet(1, "pic", [
-            ("x", "f"),
-            ("y", "f"),
-            ("t", "f")
-        ])
-    mode = Packet(2, "pic", [
-            ("mode", "H")
-        ])
-    logRampe = Packet(3, "pic", [
-            ("end", "f"),
-            ("periode", "f"),
-            ("vInit", "f"),
-            ("vFin", "f"),
-            ("vMax", "f"),
-            ("aMax", "f"),
-            ("dMax", "f"),
-            ("speedIsMoreImportante", "h")
+    stop = Packet(1, "arm")
+    done = Packet(2, "pic")
+
+    step = Packet(10, "arm", [
+        ("period", "I"),
+        ("ticsG", "I"),
+        ("ticsD", "I"),
+        ("consignG", "i"),
+        ("consignD", "i")
         ])
 
-    # Odométrie
-    odoBroadcastOn = Packet(10, "arm")
-    odoBroadcastOff = Packet(11, "arm")
-    odoBroadcastSetDelay = Packet(12, "arm", [
-            ("delay", "H")
-        ])
-    # Étalonage de l’odométrie
-    setOdoX = Packet(20, "arm", [
-            ("x", "f")
-        ])
-    setOdoY = Packet(21, "arm", [
-            ("y", "f")
-        ])
-    setOdoTheta = Packet(22, "arm", [
-            ("theta", "f")
-        ])
-    setOdoXY = Packet(23, "arm", [
-            ("x", "f"),
-            ("y", "f")
-        ])
-    setOdoXTheta = Packet(24, "arm", [
-            ("x", "f"),
-            ("theta", "f")
-        ])
-    setOdoYTheta = Packet(25, "arm", [
-            ("y", "f"),
-            ("theta", "f")
-        ])
-    setOdoXYTheta = Packet(26, "arm", [
-            ("x", "f"),
-            ("y", "f"),
-            ("theta", "f")
+    setEpsilons = Packet(11, "arm", [
+        ("dist", "f"),
+        ("speed", "f"),
+        ("theta", "f"),
+        ("omega", "f")
         ])
 
-    setOdoTicByMeter = Packet(28, "arm", [
-            ("tbm", "h")
-        ])
-    setOdoSpacing = Packet(29, "arm", [
-            ("spacing", "f")
-        ])
-
-    # Demande de la position à l’odométrie
-    getPos = Packet(30, "arm")
-    pos = Packet(31, "pic", [
-            ("x", "f"),
-            ("y", "f"),
-            ("theta", "f")
+    dist = Packet(12, "arm", [
+        ("dist", "f"),
+        ("vMax", "f"),
+        ("aMax", "f"),
         ])
 
-    # Asservissement
-    stop = Packet(40, "arm")
-    pause = Packet(41, "arm")
-    resume = Packet(42, "arm")
-    done = Packet(43, "pic")
-
-    # Primitive de déplacement
-    distSansRampe = Packet(50, "arm", [
-            ("dist", "f")
-        ])
-    rotSansRampe = Packet(51, "arm", [
-            ("rot", "f")
-        ])
-    cercleSansRampe = Packet(52, "arm", [
-            ("speed", "f"),
-            ("omega", "f")
+    rot = Packet(13, "arm", [
+        ("rot", "f"),
+        ("vMax", "f"),
+        ("aMax", "f"),
         ])
 
-    dist = Packet(53, "arm", [
-            ("dist", "f")
-        ])
-    rot = Packet(54, "arm", [
-            ("rot", "f")
+    distFree = Packet(14, "arm", [
+        ("dist", "f")
         ])
 
-    reachX = Packet(55, "arm", [
-            ("x", "f")
-        ])
-    reachY = Packet(56, "arm", [
-            ("y", "f")
-        ])
-    reachTheta = Packet(57, "arm", [
-            ("theta", "f")
-        ])
-    reachXY = Packet(58, "arm", [
-            ("x", "f"),
-            ("y", "f")
+    rotFree = Packet(15, "arm", [
+        ("rot", "f")
         ])
 
-    speed = Packet(60, "arm", [
-            ("speed", "f")
-        ])
-    omega = Packet(61, "arm", [
-            ("omega", "f")
-        ])
-    speedSansRampe = Packet(62, "arm", [
-            ("speed", "f")
-        ])
-    omegaSansRampe = Packet(63, "arm", [
-            ("omega", "f")
-        ])
-    cercle= Packet(64, "arm", [
-            ("rayon", "f"),
-            ("speed", "f")
-        ])
-    arcCercle= Packet(65, "arm", [
-            ("rayon", "f"),
-            ("theta", "f")
-        ])
-    cercleSansRampe = Packet(66, "arm", [
-            ("rayon", "f"),
-            ("speed", "f")
-        ])
-    arcCercleSansRampe = Packet(67, "arm", [
-            ("rayon", "f"),
-            ("theta", "f")
+    distRot = Packet(16, "arm", [
+        ("dist", "f"),
+        ("rot", "f"),
+        ("vDistMax", "f"),
+        ("aDistMax", "f"),
+        ("vRotMax", "f"),
+        ("aRotMax", "f")
         ])
 
-    # Paramètres
-    setDistLimits = Packet(70, "arm", [
-            ("vMax", "f"),
-            ("aMax", "f"),
-            ("dMax", "f")
-        ])
-    setRotLimits = Packet(71, "arm", [
-            ("vMax", "f"),
-            ("aMax", "f"),
-            ("dMax", "f")
+    reachX = Packet(17, "arm", [
+        ("x", "f"),
+        ("vMax", "f"),
+        ("aMax", "f")
         ])
 
-    setEpsilons = Packet(72, "arm", [
-            ("Ed", "f"),
-            ("Ev", "f"),
-            ("Et", "f"),
-            ("Eo", "f")
+    reachY = Packet(18, "arm", [
+        ("y", "f"),
+        ("vMax", "f"),
+        ("aMax", "f")
         ])
 
-    setDeltaCoefs = Packet(73, "arm", [
-            ("P", "f"),
-            ("I", "f"),
-            ("D", "f")
-        ])
-    setAlphaCoefs = Packet(74, "arm", [
-            ("P", "f"),
-            ("I", "f"),
-            ("D", "f")
+    reachTheta = Packet(19, "arm", [
+        ("theta", "f"),
+        ("vMax", "f"),
+        ("aMax", "f")
         ])
 
-
-    # Back Bumper
-    getBackBumperState = Packet(140, "arm")
-    backBumperState = Packet(141, "pic", [
-            ("state", "I"),
+    speed = Packet(20, "arm", [
+        ("speed", "f"),
+        ("aMax", "f"),
+        ("dMax", "f")
         ])
 
-    # SICKs
-    getSICKValue = Packet(150, "arm", [
-            ("id", "B")
+    speedFree = Packet(21, "arm", [
+        ("speed", "f")
         ])
-    SICKValue = Packet(151, "pic", [
-            ("id", "B"),
-            ("value", "B")
+
+    omega = Packet(22, "arm", [
+        ("omega", "f"),
+        ("aMax", "f"),
+        ("dMax", "f")
         ])
-    SICKFloodOn = Packet(152, "arm")
-    SICKFloodOff = Packet(153, "arm")
-    SICKChangeOn = Packet(154, "arm")
-    SICKChangeOff = Packet(155, "arm")
+
+    speedOmega = Packet(23, "arm", [
+        ("speed", "f"),
+        ("omega", "f"),
+        ("aDistMax", "f"),
+        ("dDistMax", "f"),
+        ("aRotMax", "f"),
+        ("dRotMax", "f")
+        ])
+
+    getX = Packet(30, "arm")
+    setX = Packet(31, "arm", [("x", "f")])
+    X = Packet(32, "pic", [("x", "f")])
+
+    getY = Packet(33, "arm")
+    setY = Packet(34, "arm", [("y", "f")])
+    Y = Packet(35, "pic", [("y", "f")])
+
+    getTheta = Packet(36, "arm")
+    setTheta = Packet(37, "arm", [("theta", "f")])
+    theta = Packet(38, "pic", [("theta", "f")])
+
+    getPos = Packet(39, "arm")
+    pos = Packet(40, "pic", [
+        ("x", "f"),
+        ("y", "f"),
+        ("theta", "f")
+        ])
+
+    setTicByMeter = Packet(41, "arm", [("tic_by_meter", "I")])
+    setSpacing = Packet(42, "arm", [("spacing", "f")])
+
+    odoBroadcastOn = Packet(43, "arm")
+    odoBroadcastOff = Packet(44, "arm")
+    odoBroadcastToggle = Packet(45, "arm")
+    odoDelay = Packet(46, "arm", [("delay", "I")])
+
+    setXTheta = Packet(47, "arm", [("x", "f"), ("theta", "f")])
+    setYTheta = Packet(48, "arm", [("y", "f"), ("theta", "f")])
+    setXYTheta = Packet(49, "arm", [("x", "f"), ("y", "f"), ("theta", "f")])
 
 
 class Mother(Proto):
@@ -311,7 +243,6 @@ class Mother(Proto):
             ("id", "B"),
             ("torque", "i"),
         ])
-
 
 
 class Turret(Proto):
