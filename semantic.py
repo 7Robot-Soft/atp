@@ -174,6 +174,7 @@ class Asserv(Proto):
     setXTheta = Packet(47, "arm", [("x", "f"), ("theta", "f")])
     setYTheta = Packet(48, "arm", [("y", "f"), ("theta", "f")])
     setXYTheta = Packet(49, "arm", [("x", "f"), ("y", "f"), ("theta", "f")])
+    setXY = Packet(50, "arm", [("x", "f"), ("y", "f")])
 
 
 class Mother(Proto):
@@ -239,7 +240,7 @@ class Mother(Proto):
             ("id", "B"),
             ("torque", "i"),
         ])
-    AX12Torque = Packet(62, "pic", [
+    AX12Torque = Packet(63, "pic", [
             ("id", "B"),
             ("torque", "i"),
         ])
