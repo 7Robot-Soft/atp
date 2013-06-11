@@ -17,7 +17,7 @@ class Common(Proto):
         print("Common")
         super(Common, self)
 
-    test = Packet(252, "both", [
+    test = Packet(250, "both", [
             ("B", "B"),
             ("H", "H"),
             ("I", "I"),
@@ -26,6 +26,8 @@ class Common(Proto):
             ("i", "i"),
             ("f", "f")
         ])
+    unknow = Packet(251, "pic")
+    unimplemented = Packet(252, "pic")
     error = Packet(253, "pic")
     getId = Packet(254, "arm")
     id = Packet(255, "pic", [

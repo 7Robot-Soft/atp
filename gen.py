@@ -171,7 +171,7 @@ class PicGenerator:
         elif packet_name == 'test':
             params['CODE'] = ' SendTest(B, H, I, b, h, i, f); '
         else:
-            params['CODE'] = ''
+            params['CODE'] = ' SendUnimplemented(); '
 
         print("\tdecoder '%s'" %params['FUNCTION'])
         c = Template(template_decoder_c).substitute(params)
