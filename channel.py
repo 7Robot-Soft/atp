@@ -142,6 +142,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Decode ATP packets with semantical traduction.')
     parser.add_argument("-p", "--proto", dest='proto')
     parser.add_argument("-c", "--connect", dest='connect', help="connect to remote host (HOST:PORT)")
+    parser.add_argument("-t", "--transmitter", dest='transmitter', help="transmitter (arm, pic, both)")
     parser.add_argument('-f', '--follow', dest='follow', action='store_true', help='output appended data as the file grows')
     parser.add_argument('-i', '--ipython', dest='ipython', action='store_true', help='launch ipython shell (need -c)')
     parser.add_argument('-s', '--symmetrical', dest='symmetrical', action='store_true', help='symmetrical packets')
@@ -174,8 +175,9 @@ if __name__ == "__main__":
     else:
         callback = print_packet
 
-    channel = Channel(stream, callback, proto = args.proto, transmitter = 'both',
-        follow = args.follow, symmetrical = args.symmetrical)
+    channel = Channel(stream, callback, proto = args.proto,
+            transmitter = args.transmitter, follow = args.follow,
+            symmetrical = args.symmetrical)
 
     if args.connect and args.ipython:
         from IPython import embed
